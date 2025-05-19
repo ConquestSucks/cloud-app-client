@@ -8,10 +8,12 @@ export default function DashboardLayout({
   sidebar: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="flex flex-col">
       {navbar}
-      {sidebar}
-      {children}
-    </>
+      <div className="flex">
+        {sidebar}
+        {children}
+      </div>
+    </div>
   );
 }

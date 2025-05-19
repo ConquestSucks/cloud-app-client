@@ -1,9 +1,10 @@
+import Sidebar from '@/app/widgets/sidebar/ui/sidebar'
 import React from 'react'
 
-const Sidebar = () => {
+const DashboardSidebar = () => {
   return (
-    <div>sidebar</div>
+    <Sidebar />
   )
 }
 
-export default Sidebar
+export default DashboardSidebar
