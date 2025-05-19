@@ -35,7 +35,7 @@ const AuthForm = () => {
           variant="outlined"
           className="border-white"
         />
-        <Link href="/" target="_blank" rel="noopener noreferrer" className="w-fit">Забыли пароль?</Link>
+        <Link href="/" target="_blank" rel="noopener noreferrer" className="w-fit">Проблемы с получением логина</Link>
       </div>
       <Button variant="contained" href="#contained-buttons">
         Далее
