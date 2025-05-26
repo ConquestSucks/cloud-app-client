@@ -1,17 +1,16 @@
+import DashboardNavbarComponent from "@/app/widgets/dashboard-navbar/ui/DashboardNavbarComponent";
+import DashboardSidebarComponent from "@/app/widgets/dashboard-sidebar/ui/Sidebar";
+
 export default function DashboardLayout({
   children,
-  navbar,
-  sidebar,
 }: {
   children: React.ReactNode;
-  navbar: React.ReactNode;
-  sidebar: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col">
-      {navbar}
-      <div className="flex">
-        {sidebar}
+    <div className="flex flex-col h-full">
+      <DashboardNavbarComponent/>
+      <div className="flex h-full gap-2">
+        <DashboardSidebarComponent />
         {children}
       </div>
     </div>
