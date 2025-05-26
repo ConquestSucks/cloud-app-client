@@ -1,7 +1,5 @@
-import HomePage from "./(routes)/home/page";
+import { redirect } from "next/navigation";
 
 export default function CloudApp() {
-  return (
-    <HomePage/>
-  );
+  redirect('/home')
 }
