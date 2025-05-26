@@ -1,8 +1,9 @@
+import HomeNavbarComponent from '@/app/widgets/home-navbar/ui/HomeNavbarComponent'
 import React from 'react'
 
 const HomeNavbar = () => {
   return (
-    <div>Home navbar</div>
+    <div><HomeNavbarComponent /></div>
   )
 }
 

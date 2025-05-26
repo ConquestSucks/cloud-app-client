@@ -6,9 +6,9 @@ export default function HomeLayout({
   navbar: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="h-full">
       {navbar}
       {children}
-    </>
+    </div>
   );
 }
