@@ -1,19 +1,20 @@
-export const PostUserLogin = async (login: string): Promise<number> => {
-    const formData = new FormData();
+import axios from "axios";
+import { LoginData, ServerResponse } from "./model/types";
 
-    formData.append('login', login);
-
-    try {
-        const res = await fetch('https://localhost:5141/api/v1/users/authenticate', {
-            method: 'POST',
-            body: formData,
-        });
-
-        console.log('response', res);
-        return res.status;
-    } catch (error) {
-        console.error('Ошибка при fetch:', error);
-        throw error;
+export const postUserLogin = async (loginData: LoginData): Promise<ServerResponse> => {
+    const response = await axios.post('http://localhost:5141/api/v1/users/login', loginData, {
+        withCredentials: true
     }
+    );
+
+    return response.data;
 };
+
+export const getIsUserLoggedIn = async (): Promise<number> => {
+    const response = await axios.get('http://localhost:5141/api/v1/users/isUserLoggedIn', {
+        withCredentials: true
+    });
+
+    return response.status;
+}
 

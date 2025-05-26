@@ -1,47 +1,104 @@
 "use client";
 
 import { Button, Link, styled, TextField } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { usePostUserLogin } from "../hooks/usePostUserLogin";
+import { LoginData } from "../model/types";
+import { useRouter } from "next/navigation";
 
-const AuthForm = () => {
-    const CustomTextField = styled(TextField)({
-  '& label': {
-    color: 'gray',
-  },
-  '& label.Mui-focused': {
-    transition: '0.3s'
-  },
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: 'gray',
-      transition: '0.3s'
+const CustomTextField = styled(TextField)({
+    '& input': {
+        color: 'white',
     },
-    '&:hover fieldset': {
-      borderColor: 'none',
-      transition: '0.3s'
+    '& label': {
+        color: 'gray',
     },
-    '&.Mui-focused fieldset': {
-      
+    '& label.Mui-focused': {
+        transition: "0.4s"
     },
-  },
+    '& .MuiOutlinedInput-root': {
+
+        '& fieldset': {
+            borderColor: 'gray',
+            transition: "0.4s"
+
+        },
+        '&:hover fieldset': {
+            borderColor: "#1976d2",
+            transition: "0.4s"
+
+        },
+        '&.Mui-focused fieldset': {
+            transition: "0.4s"
+        },
+    },
 });
 
-  return (
-    <form className="flex flex-col justify-center flex-center gap-12 shrink-1 grow-1 basis-0">
-      <div className="flex flex-col gap-2">
-        <CustomTextField 
-          id="outlined-basic"
-          label="Логин"
-          variant="outlined"
-          className="border-white"
-        />
-        <Link href="/" target="_blank" rel="noopener noreferrer" className="w-fit">Проблемы с получением логина</Link>
-      </div>
-      <Button variant="contained" href="#contained-buttons">
-        Далее
-      </Button>
-    </form>
-  );
+const CustomButton = styled(Button)({
+    '&.Mui-disabled': {
+        backgroundColor: 'gray',
+        color: 'darkgray',
+    },
+});
+
+const AuthForm = () => {
+    const router = useRouter();
+    const { mutate, error, isPending } = usePostUserLogin(router);
+    const [login, setLogin] = useState("")
+    const [validationError, setValidationError] = useState("");
+    const [isMounted, setIsMounted] = useState(false);
+    
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        const formData: LoginData = {
+            login: login,
+        };
+
+        if (formData.login.length !== 17) {
+            setValidationError("Неверный формат логина")
+            return;
+        }
+
+        setValidationError("");
+        mutate(formData);
+    }
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    return (
+        <form className="flex flex-col justify-center flex-center gap-12 shrink-1 grow-1 basis-0" onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-2">
+                <CustomTextField
+                    id="outlined-basic"
+                    name="login"
+                    label="Логин"
+                    value={login}
+                    onChange={(e) => setLogin(e.target.value)}
+                    autoComplete="off"
+                    variant="outlined"
+                    className="border-white"
+                />
+                <Link href="/" target="_blank" rel="noopener noreferrer" className="w-fit">Проблемы с получением логина</Link>
+            </div>
+            <CustomButton type="submit" variant="contained" disabled={isPending}>
+                {isPending && !error ? "Загрузка" : "Далее"}
+            </CustomButton>
+            <div
+                className={`transition-all duration-500 ease-in-out overflow-hidden text-red-100
+                    ${isMounted && (error || isPending || validationError)
+                        ? "max-h-20 opacity-100 translate-y-0"
+                        : "max-h-0 opacity-0 -translate-y-2"
+                    }`}
+            >
+                {validationError && !error && <span>{validationError}</span>}
+                {!error && isPending && <span>Подтвердите вход в телеграме</span>}
+                {error && error.response && error.response.data && error.response.data.error && <span>Ошибка: {error.response.data.error}</span>}
+            </div>
+        </form>
+    );
 };
 
 export default AuthForm;
