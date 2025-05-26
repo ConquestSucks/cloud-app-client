@@ -1,10 +1,11 @@
 import React from 'react';
-import SidebarItem from './sidebarItem';
+import SidebarItem from './SidebarItem';
 import HomeFilledIcon from '@mui/icons-material/HomeFilled';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CloudDoneIcon from '@mui/icons-material/CloudDone';
 
 const data = [
   {
@@ -37,11 +38,17 @@ const data = [
     icon: DeleteIcon,
     href: "trash"
   },
+  {
+    id: 6,
+    title: 'Хранилище',
+    icon: CloudDoneIcon,
+    href: "quota"
+  },
 ];
 
-function Sidebar() {
+function DashboardSidebarComponent() {
     return (
-        <div className='flex flex-col min-w-[240px]'>
+        <div className='flex flex-col'>
            {data.map(item => (
             <SidebarItem key={item.id} title={item.title} icon={item.icon} href={item.href} />
            ))} 
@@ -49,4 +56,4 @@ function Sidebar() {
     )
 }
 
-export default Sidebar
+export default DashboardSidebarComponent
