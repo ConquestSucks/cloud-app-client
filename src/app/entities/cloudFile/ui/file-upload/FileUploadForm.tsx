@@ -20,7 +20,7 @@ const VisuallyHiddenInput = styled('input')({
 const FileUploadForm = () => {
     const [fileList, setFileList] = useState<FileList | null>(null);
     const [openModal, setModalOpen] = useState(false);
-    const { mutateAsync, error } = useFileUpload();
+    const { mutateAsync, error, isPending } = useFileUpload();
 
     useEffect(() => {
         if (fileList && fileList.length) setModalOpen(true);
@@ -75,10 +75,10 @@ const FileUploadForm = () => {
                     <div className="flex flex-col gap-10 p-10 rounded-xl bg-[#212020] max-h-[90%]">
                         {fileList && <DisplayModalFileList fileList={fileList}/>}
                         <div className="flex justify-end gap-2">
-                            <Button variant="outlined" onClick={handleCloseModal}>
+                            <Button variant="outlined" onClick={handleCloseModal} disabled={isPending}>
                                 Отменить
                             </Button>
-                            <Button variant="contained" onClick={handleForm}>
+                            <Button variant="contained" onClick={handleForm} loading={isPending}>
                                 Продолжить
                             </Button>
                         </div>
