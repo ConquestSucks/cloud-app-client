@@ -46,7 +46,7 @@ const data = [
   },
 ];
 
-function DashboardSidebarComponent() {
+const DashboardSidebarComponent = () => {
     return (
         <div className='flex flex-col'>
            {data.map(item => (

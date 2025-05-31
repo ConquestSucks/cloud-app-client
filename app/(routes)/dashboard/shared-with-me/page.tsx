@@ -1,4 +1,4 @@
-import PageTitle from '@/app/shared/ui/pageTitle'
+import PageTitle from '@/app/shared/ui/PageTitle'
 import React from 'react'
 
 const Shared = () => {

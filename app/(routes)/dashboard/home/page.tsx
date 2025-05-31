@@ -1,7 +1,9 @@
 'use client'
 
-import { FileUploadForm } from "@/app/entities/cloudFile/ui/FileUploadForm";
-import PageTitle from "@/app/shared/ui/pageTitle";
+import FileUploadForm from "@/app/entities/cloudFile/ui/FileUploadForm";
+import PageTitle from "@/app/shared/ui/PageTitle";
+
+
 import React from "react";
 
 const Home = () => {

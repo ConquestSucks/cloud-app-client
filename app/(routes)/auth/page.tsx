@@ -1,9 +1,8 @@
 "use client";
 import { useGetIsUserLoggedIn } from "@/app/features/auth/hooks/useGetIsUserLoggedIn";
-import AuthForm from "@/app/features/auth/ui/authForm";
-import AuthPlateText from "@/app/features/auth/ui/authPlateText";
+import AuthForm from "@/app/features/auth/ui/AuthForm";
+import AuthPlateText from "@/app/features/auth/ui/AuthPlateText";
 import { redirect } from "next/navigation";
-
 import React from "react";
 
 

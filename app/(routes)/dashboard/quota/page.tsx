@@ -1,5 +1,5 @@
-import DisplayStorageQuota from '@/app/features/storage-quota/ui/displayStorageQuota'
-import PageTitle from '@/app/shared/ui/pageTitle'
+import DisplayStorageQuota from '@/app/features/storage-quota/ui/DisplayStorageQuota'
+import PageTitle from '@/app/shared/ui/PageTitle'
 import React from 'react'
 
 const Quota = () => {
