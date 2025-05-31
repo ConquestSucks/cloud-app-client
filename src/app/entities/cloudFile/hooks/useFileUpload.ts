@@ -6,7 +6,7 @@ export const useFileUpload = () => {
     return useMutation<number, Error, File>({
         mutationFn: fileUpload,
         onSuccess: () => {
-            alert("Файл успешно загружен")
+            console.log("файл загружен")
         }
     });
 }
