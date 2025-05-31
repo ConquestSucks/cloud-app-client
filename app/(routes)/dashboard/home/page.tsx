@@ -1,6 +1,7 @@
 'use client'
 
-import FileUploadForm from "@/app/entities/cloudFile/ui/FileUploadForm";
+import FileUploadForm from "@/app/entities/cloudFile/ui/file-upload/FileUploadForm";
+import DisplayFileList from "@/app/entities/cloudFile/ui/get-files/DisplayFileList";
 import PageTitle from "@/app/shared/ui/PageTitle";
 
 
@@ -10,6 +11,7 @@ const Home = () => {
     return <div className="dashboard-page">
         <PageTitle title="Мой диск" />
         <FileUploadForm />
+        <DisplayFileList />
     </div>;
 };
 

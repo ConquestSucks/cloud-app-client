@@ -1,13 +1,19 @@
 import { BaseEntity } from "@/app/shared/model/types";
-import { CloudFolder } from "../../cloudFolder/model/types";
-import { User } from "../../user/model/types";
 
 export interface CloudFile extends BaseEntity {
-    key: string; 
-    user: User;
-    cloudFolder?: CloudFolder;
+    userDisplayName: string;
+    cloudFolderId?: number;
     publicUrl?: string;
+    key: string;
     size: number;
     extension: string;
     downloadCount: number;
+}
+
+export interface GetFilesResponse {
+    files: CloudFile[];
+    headers: {
+        "x-total-count": number;
+        "x-total-pages": number;
+    };
 }
