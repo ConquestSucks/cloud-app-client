@@ -7,6 +7,6 @@ export const useFileUpload = () => {
         mutationFn: fileUpload,
         onSuccess: () => {
             console.log("файл загружен")
-        }
+        },
     });
 }

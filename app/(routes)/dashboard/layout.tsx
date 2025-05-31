@@ -7,9 +7,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full gap-5">
       <DashboardNavbarComponent/>
-      <div className="flex h-full gap-2">
+      <div className="flex gap-2">
         <DashboardSidebarComponent />
         {children}
       </div>

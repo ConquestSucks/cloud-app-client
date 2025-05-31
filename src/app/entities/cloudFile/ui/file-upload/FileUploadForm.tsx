@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { checkSelectedFilesSize } from "../lib/checkFileSize";
-import { useFileUpload } from "../hooks/useFileUpload";
+import { checkSelectedFilesSize } from "../../lib/checkFileSize";
+import { useFileUpload } from "../../hooks/useFileUpload";
 import { Button, Modal, styled } from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import DisplayFileList from "./DisplayFileList";
+import DisplayModalFileList from "./DisplayModalFileList";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -32,7 +32,6 @@ const FileUploadForm = () => {
     }
 
     const handleForm = async () => {
-        console.log("hui")
         if (!fileList) return;
 
         if (!checkSelectedFilesSize(fileList)) return;
@@ -74,7 +73,7 @@ const FileUploadForm = () => {
             >
                 <div className="flex items-center justify-center h-full">
                     <div className="flex flex-col gap-10 p-10 rounded-xl bg-[#212020] max-h-[90%]">
-                        {fileList && <DisplayFileList fileList={fileList}/>}
+                        {fileList && <DisplayModalFileList fileList={fileList}/>}
                         <div className="flex justify-end gap-2">
                             <Button variant="outlined" onClick={handleCloseModal}>
                                 Отменить

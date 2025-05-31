@@ -1,6 +1,6 @@
 'use client'
 
-import NavbarLogo from '@/app/shared/ui/navbarLogo'
+import NavbarLogo from '@/app/shared/ui/NavbarLogo'
 import { Button } from '@mui/material'
 import React from 'react'
 
