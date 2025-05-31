@@ -17,7 +17,16 @@ const DisplayFileList = () => {
             <div className='flex flex-col gap-2 overflow-y-hidden'>
                 {data?.files.map(item => <FileItem key={item.id} data={item} />)}
             </div>
-            <Pagination color="primary" count={data?.headers['x-total-pages']} onChange={handlePageChange} />
+            <Pagination 
+                color="primary" 
+                count={data?.headers['x-total-pages']} 
+                onChange={handlePageChange}
+                sx={{
+                    '& .MuiPaginationItem-root': {
+                        color: 'white',
+                    }
+                }}
+            />
         </div>
     )
 }
