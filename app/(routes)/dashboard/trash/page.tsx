@@ -6,7 +6,9 @@ const Trash = () => {
     return (
         <div className='dashboard-page'>
             <PageTitle title="Корзина" />
-            <DisplayFileList deleted={true}/>
+            <div className="flex-1 mt-8">
+                <DisplayFileList deleted={true}/>
+            </div>
         </div>
     )
 }

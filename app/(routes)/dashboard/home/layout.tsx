@@ -8,9 +8,9 @@ export default function HomeLayout({
     children: React.ReactNode;
 }>) {
     const [queryClient] = React.useState(() => new QueryClient());
-    return <div className={"flex justify-center items-center h-full grow"}>
+    return (
         <QueryClientProvider client={queryClient}>
             {children}
         </QueryClientProvider>
-    </div>;
+    );
 }

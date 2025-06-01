@@ -40,21 +40,24 @@ const FileItem = ({ fileData }: { fileData: CloudFile }) => {
                         style: {
                             backgroundColor: '#ffffff',
                             color: '#171717',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                            borderRadius: '25px',
+                            padding: '8px',
+                            fontFamily: 'Arial, Helvetica, sans-serif'
                         }
                     }}
                 >
-                    <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
+                    <DialogTitle id="alert-dialog-title" style={{ color: '#171717', fontFamily: 'Arial, Helvetica, sans-serif' }}>
                         {"Переместить в корзину?"}
                     </DialogTitle>
                     <DialogContent>
-                        <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
+                        <DialogContentText id="alert-dialog-description" style={{ color: '#666666', fontFamily: 'Arial, Helvetica, sans-serif' }}>
                             После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл будет перемещен в корзину
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => setOpenDialogRemove(false)}>Отменить</Button>
-                        <Button onClick={handleFileDeleteWithoutRemove} autoFocus>
+                        <Button onClick={() => setOpenDialogRemove(false)} sx={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>Отменить</Button>
+                        <Button onClick={handleFileDeleteWithoutRemove} autoFocus sx={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
                             Продолжить
                         </Button>
                     </DialogActions>

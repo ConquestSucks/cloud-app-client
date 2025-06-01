@@ -5,6 +5,9 @@ const Starred = () => {
     return (
         <div className='dashboard-page'>
             <PageTitle title="Избранное" />
+            <div className="flex-1 mt-8">
+                {/* Контент страницы */}
+            </div>
         </div>
     )
 }

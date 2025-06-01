@@ -5,6 +5,9 @@ const Recent = () => {
     return (
         <div className='dashboard-page'>
             <PageTitle title="Недавние" />
+            <div className="flex-1">
+                {/* Контент страницы */}
+            </div>
         </div>
     )
 }

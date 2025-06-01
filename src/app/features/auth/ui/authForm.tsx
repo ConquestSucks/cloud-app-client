@@ -8,36 +8,41 @@ import { useRouter } from "next/navigation";
 
 const CustomTextField = styled(TextField)({
     '& input': {
-        color: 'white',
+        color: '#171717',
     },
     '& label': {
-        color: 'gray',
+        color: '#666666',
     },
     '& label.Mui-focused': {
+        color: '#1976d2',
         transition: "0.4s"
     },
     '& .MuiOutlinedInput-root': {
-
+        backgroundColor: '#ffffff',
         '& fieldset': {
-            borderColor: 'gray',
+            borderColor: '#666666',
             transition: "0.4s"
-
         },
         '&:hover fieldset': {
             borderColor: "#1976d2",
             transition: "0.4s"
-
         },
         '&.Mui-focused fieldset': {
+            borderColor: "#1976d2",
             transition: "0.4s"
         },
     },
 });
 
 const CustomButton = styled(Button)({
+    backgroundColor: '#1976d2',
+    color: '#ffffff',
+    '&:hover': {
+        backgroundColor: '#1565c0',
+    },
     '&.Mui-disabled': {
-        backgroundColor: 'gray',
-        color: 'darkgray',
+        backgroundColor: '#e0e0e0',
+        color: '#9e9e9e',
     },
 });
 
