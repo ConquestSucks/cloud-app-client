@@ -3,29 +3,38 @@ import { CloudFile } from "../../model/types";
 import IosShareIcon from '@mui/icons-material/IosShare';
 import DownloadIcon from '@mui/icons-material/Download';
 import EditIcon from '@mui/icons-material/Edit';
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { formatBytes } from "../../lib/formatBytes";
 import { formatDate } from "../../lib/formatDate";
 import styles from "./FileItem.module.css"
 import FilePreview from "./FilePreview";
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useFileDeleteWithoutRemove } from "../../hooks/useFileDeleteWithoutRemove";
 import { useFileDelete } from "../../hooks/useFileDelete";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-
+import { useRestoreFile } from "../../hooks/useRestoreFile";
 
 const FileItem = ({ fileData }: { fileData: CloudFile }) => {
     const { mutate: deleteFileWithoutRemove } = useFileDeleteWithoutRemove();
     const { mutate: deleteFile } = useFileDelete();
+    const { mutate: restoreFile } = useRestoreFile();
+
     const [openDialogMoveToTrash, setOpenDialogMoveToTrash,] = React.useState(false);
     const [openDialogDelete, setOpenDialogDelete] = React.useState(false);
+    const [openDialogRestore, setOpenDialogRestore] = React.useState(false);
+
     const handleFileDeleteWithoutRemove = () => {
         deleteFileWithoutRemove(fileData.key);
         setOpenDialogMoveToTrash(false);
     }
     const handleFileDelete = () => {
-        console.log(fileData.key)
         deleteFile(fileData.key);
         setOpenDialogDelete(false);
+    }
+
+    const handleFileRestore = () => {
+        restoreFile(fileData.key);
+        setOpenDialogRestore(false);
     }
 
     return (
@@ -36,65 +45,97 @@ const FileItem = ({ fileData }: { fileData: CloudFile }) => {
                 <span className="my-auto text-ellipsis text-gray-700">{formatDate(fileData.modifiedAt)}</span>
                 <span className="my-auto text-ellipsis text-gray-700">{formatBytes(fileData.size)}</span>
             </div>
-            <div className={`${styles["file-buttons"]} flex gap-2 align-center`}>
-                <button className="text-gray-600 hover:text-blue-600"><IosShareIcon /></button>
-                <button className="text-gray-600 hover:text-blue-600"><DownloadIcon /></button>
-                <button className="text-gray-600 hover:text-blue-600"><EditIcon /></button>
-                {!fileData.deletedAt && <button onClick={() => setOpenDialogMoveToTrash(true)} className="text-gray-600 hover:text-red-600"><DeleteIcon /></button>}
-                {fileData.deletedAt && <button onClick={() => setOpenDialogDelete(true)} className="text-gray-600 hover:text-red-600"><DeleteIcon /></button>}
-                <Dialog
-                    open={openDialogMoveToTrash}
-                    onClose={() => setOpenDialogMoveToTrash(false)}
-                    PaperProps={{
-                        style: {
-                            backgroundColor: '#ffffff',
-                            color: '#171717',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                        }
-                    }}
-                >
-                    <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
-                        {"Переместить в корзину?"}
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
-                            После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл будет перемещен в корзину
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setOpenDialogMoveToTrash(false)}>Отменить</Button>
-                        <Button onClick={handleFileDeleteWithoutRemove} autoFocus>
-                            Продолжить
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-                <Dialog
-                    open={openDialogDelete}
-                    onClose={() => setOpenDialogDelete(false)}
-                    PaperProps={{
-                        style: {
-                            backgroundColor: '#ffffff',
-                            color: '#171717',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                        }
-                    }}
-                >
-                    <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
-                        {"Удалить файл?"}
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
-                            После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл будет удален без возможности восстановления
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setOpenDialogDelete(false)}>Отменить</Button>
-                        <Button onClick={handleFileDelete} autoFocus>
-                            Продолжить
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
+            {!fileData.deletedAt ? (
+                <div className={`${styles["file-buttons"]} flex gap-2 align-center`}>
+                    <button className="text-gray-600 hover:text-blue-600"><IosShareIcon /></button>
+                    <button className="text-gray-600 hover:text-blue-600"><DownloadIcon /></button>
+                    <button className="text-gray-600 hover:text-blue-600"><EditIcon /></button>
+                    <button onClick={() => setOpenDialogMoveToTrash(true)} className="text-gray-600 hover:text-red-600"><DeleteIcon /></button>
+                </div>
+            ) : (
+                <div className={`${styles["file-buttons"]} flex gap-2 align-center`}>
+                    <button onClick={() => setOpenDialogRestore(true)} className="text-gray-600 hover:text-blue-600"><RestoreFromTrashIcon /></button>
+                    <button onClick={() => setOpenDialogDelete(true)} className="text-gray-600 hover:text-red-600"><DeleteIcon /></button>
+                </div>
+            )}
+            <Dialog
+                open={openDialogMoveToTrash}
+                onClose={() => setOpenDialogMoveToTrash(false)}
+                PaperProps={{
+                    style: {
+                        backgroundColor: '#ffffff',
+                        color: '#171717',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                    }
+                }}
+            >
+                <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
+                    {"Переместить в корзину?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
+                        После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл будет перемещен в корзину
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialogMoveToTrash(false)}>Отменить</Button>
+                    <Button onClick={handleFileDeleteWithoutRemove} autoFocus>
+                        Продолжить
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openDialogDelete}
+                onClose={() => setOpenDialogDelete(false)}
+                PaperProps={{
+                    style: {
+                        backgroundColor: '#ffffff',
+                        color: '#171717',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                    }
+                }}
+            >
+                <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
+                    {"Удалить файл?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
+                        После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл будет удален без возможности восстановления
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialogDelete(false)}>Отменить</Button>
+                    <Button onClick={handleFileDelete} autoFocus>
+                        Продолжить
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openDialogRestore}
+                onClose={() => setOpenDialogRestore(false)}
+                PaperProps={{
+                    style: {
+                        backgroundColor: '#ffffff',
+                        color: '#171717',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                    }
+                }}
+            >
+                <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
+                    {"Восстановить файл?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
+                        После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл снова будет доступен
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialogRestore(false)}>Отменить</Button>
+                    <Button onClick={handleFileRestore} autoFocus>
+                        Продолжить
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };
