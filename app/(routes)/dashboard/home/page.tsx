@@ -9,10 +9,10 @@ import React from "react";
 const Home = () => {
     return (
         <div className="dashboard-page relative w-full">
-            <div className="absolute top-5 right-5">
+            <div className="flex justify-between">
+                <PageTitle title="Мой диск" />
                 <FileUploadForm />
             </div>
-            <PageTitle title="Мой диск" />
             <div className="mt-8">
                 <DisplayFileList />
             </div>
