@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { checkSelectedFilesSize } from "../../lib/checkFileSize";
 import { useFileUpload } from "../../hooks/useFileUpload";
-import { Button, Modal, styled } from "@mui/material";
+import { Button, Modal, styled, CircularProgress } from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DisplayModalFileList from "./DisplayModalFileList";
+import { signalRService } from "../../api/signalRService";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -22,19 +23,52 @@ const VisuallyHiddenInput = styled('input')({
 const FileUploadForm = () => {
     const [fileList, setFileList] = useState<FileList | null>(null);
     const [openModal, setModalOpen] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
+    const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+    const [currentFile, setCurrentFile] = useState<string | null>(null);
     const { mutateAsync, error, isPending } = useFileUpload();
+
+    const isAllFilesUploaded = () => {
+        return fileList && Array.from(fileList).every(file => uploadedFiles.includes(file.name));
+    };
 
     useEffect(() => {
         if (fileList && fileList.length) setModalOpen(true);
-    }, [fileList])
+    }, [fileList]);
+
+    useEffect(() => {
+        const setupSignalR = async () => {
+            await signalRService.subscribeToProgress((percent) => {
+                if (currentFile) {
+                    setUploadProgress(prev => ({
+                        ...prev,
+                        [currentFile]: percent
+                    }));
+
+                    if (percent === 100) {
+                        setUploadedFiles(prev => [...prev, currentFile]);
+                    }
+                }
+            });
+        };
+
+        setupSignalR();
+
+        return () => {
+            signalRService.unsubscribeFromProgress();
+        };
+    }, [currentFile]);
 
     const handleCloseModal = () => {
         setModalOpen(false);
         setFileList(null);
-    }
+        setUploadProgress({});
+        setUploadedFiles([]);
+        setCurrentFile(null);
+    };
 
     const handleRemoveFile = (fileName: string) => {
-        if (!fileList) return;
+        if (!fileList || uploadedFiles.includes(fileName)) return;
         
         const dt = new DataTransfer();
         Array.from(fileList)
@@ -53,17 +87,31 @@ const FileUploadForm = () => {
         if (!checkSelectedFilesSize(fileList)) return;
 
         const files = Array.from(fileList);
+        const connectionId = await signalRService.getConnectionId();
 
         for (const file of files) {
             try {
-                await mutateAsync(file);
+                setCurrentFile(file.name);
+                setUploadProgress(prev => ({ ...prev, [file.name]: 0 }));
+                
+                await mutateAsync({
+                    file,
+                    options: {
+                        connectionId
+                    }
+                });
+                
+                // Файл считается полностью загруженным только когда прогресс от SignalR 100%
+                // и запрос завершился успешно
+                if (uploadProgress[file.name] === 100) {
+                    setUploadedFiles(prev => [...prev, file.name]);
+                }
             } catch (error) {
-                console.log(error)
+                console.error(`Error uploading ${file.name}:`, error);
             }
         }
 
-        setFileList(null);
-        setModalOpen(false);
+        setCurrentFile(null);
     };
 
     return (
@@ -78,7 +126,12 @@ const FileUploadForm = () => {
                 Загрузить
                 <VisuallyHiddenInput
                     type="file"
-                    onChange={(e) => setFileList(e.target.files)}
+                    onChange={(e) => {
+                        setFileList(e.target.files);
+                        setUploadProgress({});
+                        setUploadedFiles([]);
+                        setCurrentFile(null);
+                    }}
                     multiple
                 />
             </Button>
@@ -98,29 +151,54 @@ const FileUploadForm = () => {
                             <h2 className="text-2xl font-semibold text-slate-800">Загрузка файлов</h2>
                             <p className="text-slate-500 mt-1">Выберите файлы для загрузки на облако</p>
                         </div>
-                        {fileList && <DisplayModalFileList fileList={fileList} onRemoveFile={handleRemoveFile} />}
+                        {fileList && (
+                            <DisplayModalFileList 
+                                fileList={fileList} 
+                                onRemoveFile={handleRemoveFile} 
+                                isPending={isPending}
+                                uploadProgress={uploadProgress}
+                                uploadedFiles={uploadedFiles}
+                            />
+                        )}
                         <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                             <Button 
-                                variant="outlined" 
+                                variant={isAllFilesUploaded() ? "contained" : "outlined"} 
                                 onClick={handleCloseModal} 
                                 disabled={isPending}
                                 sx={{
-                                    color: '#64748b',
-                                    borderColor: '#e2e8f0',
-                                    '&:hover': {
-                                        borderColor: '#94a3b8',
-                                        backgroundColor: '#f8fafc',
-                                    },
+                                    ...(isAllFilesUploaded()
+                                        ? {
+                                            backgroundColor: '#22c55e',
+                                            color: '#ffffff',
+                                            '&:hover': {
+                                                backgroundColor: '#16a34a',
+                                            },
+                                        }
+                                        : {
+                                            color: '#64748b',
+                                            borderColor: '#e2e8f0',
+                                            '&:hover': {
+                                                borderColor: '#94a3b8',
+                                                backgroundColor: '#f8fafc',
+                                            },
+                                        }
+                                    ),
                                     textTransform: 'none',
                                     fontWeight: 500
                                 }}
                             >
-                                Отменить
+                                {isAllFilesUploaded() ? 'Завершить' : 'Отменить'}
                             </Button>
                             <Button 
                                 variant="contained" 
                                 onClick={handleForm} 
-                                disabled={isPending}
+                                disabled={isPending || Boolean(isAllFilesUploaded())}
+                                startIcon={isPending ? (
+                                    <CircularProgress 
+                                        size={20} 
+                                        sx={{ color: 'white' }} 
+                                    />
+                                ) : undefined}
                                 sx={{
                                     backgroundColor: '#3b82f6',
                                     '&:hover': {
@@ -131,10 +209,11 @@ const FileUploadForm = () => {
                                         color: '#ffffff',
                                     },
                                     textTransform: 'none',
-                                    fontWeight: 500
+                                    fontWeight: 500,
+                                    minWidth: '120px'
                                 }}
                             >
-                                {isPending ? 'Загрузка...' : 'Загрузить файлы'}
+                                {!isPending && 'Загрузить файлы'}
                             </Button>
                         </div>
                         {error && (
