@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { GetFilesResponse } from '../model/types';
+import { GetFilesParams, GetFilesResponse } from '../model/types';
 
-export const getFiles = async (pageNumber: number, pageSize: number, deletedFiles: boolean): Promise<GetFilesResponse> => {
+export const getFiles = async ({ pageNumber, pageSize, deletedFiles }: GetFilesParams): Promise<GetFilesResponse> => {
     const response = await axios.get('http://localhost:5141/api/v1/files/getUserFiles', {
         params: {
             pageNumber,

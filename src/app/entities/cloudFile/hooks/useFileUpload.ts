@@ -4,9 +4,6 @@ import { fileUpload } from "../api/fileUpload";
 
 export const useFileUpload = () => {
     return useMutation<number, Error, File>({
-        mutationFn: fileUpload,
-        onSuccess: () => {
-            console.log("файл загружен")
-        },
+        mutationFn: fileUpload
     });
 }

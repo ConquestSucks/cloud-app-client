@@ -1,15 +1,11 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getFiles } from "../api/getFiles";
-import { GetFilesResponse } from "../model/types";
+import { GetFilesParams, GetFilesResponse } from "../model/types";
 
-export const useGetFiles = (
-  pageNumber: number,
-  pageSize: number,
-  deletedFiles: boolean = false
-) => {
+export const useGetFiles = (params: GetFilesParams) => {
   return useQuery<GetFilesResponse, Error>({
-    queryKey: ["userFiles", pageNumber, pageSize, deletedFiles],
-    queryFn: () => getFiles(pageNumber, pageSize, deletedFiles),
+    queryKey: ["userFiles", params],
+    queryFn: () => getFiles(params),
     placeholderData: keepPreviousData
   });
 };

@@ -10,6 +10,12 @@ export interface CloudFile extends BaseEntity {
     downloadCount: number;
 }
 
+export interface GetFilesParams {
+    pageNumber: number;
+    pageSize: number;
+    deletedFiles: boolean;
+}
+
 export interface GetFilesResponse {
     files: CloudFile[];
     headers: {
