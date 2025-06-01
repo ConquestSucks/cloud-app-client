@@ -65,21 +65,24 @@ const FileItem = ({ fileData }: { fileData: CloudFile }) => {
                     style: {
                         backgroundColor: '#ffffff',
                         color: '#171717',
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        borderRadius: '25px',
+                        padding: '8px',
+                        fontFamily: 'Arial, Helvetica, sans-serif'
                     }
                 }}
             >
-                <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
+                <DialogTitle id="alert-dialog-title" style={{ color: '#171717', fontFamily: 'Arial, Helvetica, sans-serif' }}>
                     {"Переместить в корзину?"}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
+                    <DialogContentText id="alert-dialog-description" style={{ color: '#666666', fontFamily: 'Arial, Helvetica, sans-serif' }}>
                         После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл будет перемещен в корзину
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenDialogMoveToTrash(false)}>Отменить</Button>
-                    <Button onClick={handleFileDeleteWithoutRemove} autoFocus>
+                    <Button onClick={() => setOpenDialogMoveToTrash(false)} sx={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>Отменить</Button>
+                    <Button onClick={handleFileDeleteWithoutRemove} autoFocus sx={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
                         Продолжить
                     </Button>
                 </DialogActions>
@@ -91,21 +94,24 @@ const FileItem = ({ fileData }: { fileData: CloudFile }) => {
                     style: {
                         backgroundColor: '#ffffff',
                         color: '#171717',
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        borderRadius: '25px',
+                        padding: '8px',
+                        fontFamily: 'Arial, Helvetica, sans-serif'
                     }
                 }}
             >
-                <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
+                <DialogTitle id="alert-dialog-title" style={{ color: '#171717', fontFamily: 'Arial, Helvetica, sans-serif' }}>
                     {"Удалить файл?"}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
+                    <DialogContentText id="alert-dialog-description" style={{ color: '#666666', fontFamily: 'Arial, Helvetica, sans-serif' }}>
                         После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл будет удален без возможности восстановления
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenDialogDelete(false)}>Отменить</Button>
-                    <Button onClick={handleFileDelete} autoFocus>
+                    <Button onClick={() => setOpenDialogDelete(false)} sx={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>Отменить</Button>
+                    <Button onClick={handleFileDelete} autoFocus sx={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
                         Продолжить
                     </Button>
                 </DialogActions>
@@ -117,21 +123,24 @@ const FileItem = ({ fileData }: { fileData: CloudFile }) => {
                     style: {
                         backgroundColor: '#ffffff',
                         color: '#171717',
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        borderRadius: '25px',
+                        padding: '8px',
+                        fontFamily: 'Arial, Helvetica, sans-serif'
                     }
                 }}
             >
-                <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
+                <DialogTitle id="alert-dialog-title" style={{ color: '#171717', fontFamily: 'Arial, Helvetica, sans-serif' }}>
                     {"Восстановить файл?"}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
+                    <DialogContentText id="alert-dialog-description" style={{ color: '#666666', fontFamily: 'Arial, Helvetica, sans-serif' }}>
                         После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл снова будет доступен
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenDialogRestore(false)}>Отменить</Button>
-                    <Button onClick={handleFileRestore} autoFocus>
+                    <Button onClick={() => setOpenDialogRestore(false)} sx={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>Отменить</Button>
+                    <Button onClick={handleFileRestore} autoFocus sx={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
                         Продолжить
                     </Button>
                 </DialogActions>
