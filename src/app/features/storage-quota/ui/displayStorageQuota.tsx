@@ -1,3 +1,7 @@
+'use client'
+
+import React from 'react';
+
 const DisplayStorageQuota = () => {
     const total = 100;
     const video = 40;

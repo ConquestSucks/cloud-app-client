@@ -8,7 +8,9 @@ const Quota = () => {
     return (
         <>
             <PageTitle title="Хранилище" />
-            <DisplayStorageQuota />
+            <div className="mt-8">
+                <DisplayStorageQuota />
+            </div>
         </>
     )
 }
