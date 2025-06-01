@@ -77,16 +77,31 @@ const FileUploadForm = () => {
                     <div className="flex flex-col gap-10 p-10 rounded-xl bg-[#212020] max-h-[90%]">
                         {fileList && <DisplayModalFileList fileList={fileList} />}
                         <div className="flex justify-end gap-2">
-                            <Button variant="outlined" onClick={handleCloseModal} disabled={isPending}>
+                            <Button variant="outlined" onClick={handleCloseModal} 
+                                disabled={isPending}
+                                sx={{
+                                    color: '#666666',
+                                    borderColor: '#666666',
+                                    '&:hover': {
+                                        borderColor: '#1976d2',
+                                        color: '#1976d2',
+                                    }
+                                }}
+                            >
                                 Отменить
                             </Button>
                             <Button variant="contained" onClick={handleForm} loading={isPending}
                                 sx={{
+                                    backgroundColor: '#1976d2',
+                                    color: '#ffffff',
+                                    '&:hover': {
+                                        backgroundColor: '#1565c0',
+                                    },
                                     '&.MuiButton-loading': {
-                                        backgroundColor: '#1565C0',
+                                        backgroundColor: '#1565c0',
                                     },
                                     '& .MuiButton-loadingIndicator': {
-                                        color: 'white'
+                                        color: '#ffffff'
                                     }
                                 }}
                             >

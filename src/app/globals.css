@@ -30,6 +30,7 @@ body {
   background-color: #ffffff;
   border-radius: 25px;
   color: #171717;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes modalAppear {

@@ -21,27 +21,34 @@ const FileItem = ({ fileData }: { fileData: CloudFile }) => {
       const [openDialogRemove, setOpenDialogRemove] = React.useState(false);
 
     return (
-        <div className={`${styles.file} flex gap-2 items-center justify-between p-3 bg-white rounded-xl border border-gray-200 hover:border-blue-400 hover:bg-blue-50/30 hover:shadow-lg hover:scale-[1.01] duration-300 ease-in-out transform`}>
+        <div className={`${styles.file} flex gap-2 items-center justify-between p-3 bg-white rounded-xl border border-gray-200 hover:border-blue-400 hover:bg-blue-50/30 hover:shadow-lg hover:scale-[1.005] hover:z-10 duration-300 ease-in-out transform`}>
             <div className="grid grid-cols-[5%_30%_20%_1fr] w-[80%] gap-10">
                 <FilePreview extension={fileData.extension} />
-                <span className="my-auto text-ellipsis text-clip overflow-hidden">{fileData.name}{fileData.extension ? `.${fileData.extension}` : ''}</span>
-                <span className="my-auto text-ellipsis">{formatDate(fileData.modifiedAt)}</span>
-                <span className="my-auto text-ellipsis">{formatBytes(fileData.size)}</span>
+                <span className="my-auto text-ellipsis text-clip overflow-hidden text-gray-900">{fileData.name}{fileData.extension ? `.${fileData.extension}` : ''}</span>
+                <span className="my-auto text-ellipsis text-gray-700">{formatDate(fileData.modifiedAt)}</span>
+                <span className="my-auto text-ellipsis text-gray-700">{formatBytes(fileData.size)}</span>
             </div>
             <div className={`${styles["file-buttons"]} flex gap-2 align-center`}>
-                <button><IosShareIcon /></button>
-                <button><DownloadIcon /></button>
-                <button><EditIcon /></button>
-                {!fileData.deletedAt && <button onClick={() => setOpenDialogRemove(true)}><DeleteIcon /></button>}
+                <button className="text-gray-600 hover:text-blue-600"><IosShareIcon /></button>
+                <button className="text-gray-600 hover:text-blue-600"><DownloadIcon /></button>
+                <button className="text-gray-600 hover:text-blue-600"><EditIcon /></button>
+                {!fileData.deletedAt && <button onClick={() => setOpenDialogRemove(true)} className="text-gray-600 hover:text-red-600"><DeleteIcon /></button>}
                 <Dialog
                     open={openDialogRemove}
                     onClose={() => setOpenDialogRemove(false)}
+                    PaperProps={{
+                        style: {
+                            backgroundColor: '#ffffff',
+                            color: '#171717',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                        }
+                    }}
                 >
-                    <DialogTitle id="alert-dialog-title">
+                    <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
                         {"Переместить в корзину?"}
                     </DialogTitle>
                     <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
+                        <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
                             После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл будет перемещен в корзину
                         </DialogContentText>
                     </DialogContent>

@@ -20,7 +20,7 @@ const DisplayFileList = ({ deleted = false }: { deleted?: boolean }) => {
 
     return (
         <div className='flex flex-col gap-5 lg:h-fit'>
-            <div className='flex flex-col gap-2 overflow-y-hidden'>
+            <div className='flex flex-col gap-2 overflow-visible'>
                 {data?.files.map(item => <FileItem key={item.id} fileData={item} />)}
             </div>
             <Pagination
