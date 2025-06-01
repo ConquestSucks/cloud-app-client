@@ -12,13 +12,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #212020;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
@@ -36,6 +29,20 @@ body {
   padding: 20px;
   background-color: #ffffff;
   border-radius: 25px;
-  color: white;
-  background-color: #131314;
+  color: #171717;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-modal-appear {
+  animation: modalAppear 0.2s ease-out forwards;
 }

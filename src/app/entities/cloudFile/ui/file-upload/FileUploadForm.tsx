@@ -68,21 +68,52 @@ const FileUploadForm = () => {
             </Button>
             <Modal
                 open={openModal}
+                onClose={handleCloseModal}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
+                className="backdrop-blur-sm"
             >
-                <div className="flex items-center justify-center h-full">
-                    <div className="flex flex-col gap-10 p-10 rounded-xl bg-[#212020] max-h-[90%]">
+                <div className="flex items-center justify-center h-full p-4">
+                    <div className="flex flex-col gap-6 p-8 rounded-xl bg-white shadow-xl w-full max-w-[800px] min-w-[600px] min-h-[400px] animate-modal-appear">
                         {fileList && <DisplayModalFileList fileList={fileList}/>}
-                        <div className="flex justify-end gap-2">
-                            <Button variant="outlined" onClick={handleCloseModal} disabled={isPending}>
+                        <div className="flex justify-end gap-3 mt-auto">
+                            <Button 
+                                variant="outlined" 
+                                onClick={handleCloseModal} 
+                                disabled={isPending}
+                                sx={{
+                                    borderColor: '#E5E7EB',
+                                    color: '#4B5563',
+                                    '&:hover': {
+                                        borderColor: '#D1D5DB',
+                                        backgroundColor: '#F9FAFB'
+                                    }
+                                }}
+                            >
                                 Отменить
                             </Button>
-                            <Button variant="contained" onClick={handleForm} loading={isPending}>
-                                Продолжить
+                            <Button 
+                                variant="contained" 
+                                onClick={handleForm} 
+                                disabled={isPending}
+                                sx={{
+                                    backgroundColor: '#2563EB',
+                                    '&:hover': {
+                                        backgroundColor: '#1D4ED8'
+                                    },
+                                    '&:disabled': {
+                                        backgroundColor: '#93C5FD'
+                                    }
+                                }}
+                            >
+                                {isPending ? 'Загрузка...' : 'Продолжить'}
                             </Button>
                         </div>
-                        {error && <span>error</span>}
+                        {error && (
+                            <div className="text-red-500 text-sm mt-2">
+                                Произошла ошибка при загрузке файлов. Пожалуйста, попробуйте снова.
+                            </div>
+                        )}
                     </div>
                 </div>
             </Modal>

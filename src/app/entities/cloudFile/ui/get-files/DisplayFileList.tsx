@@ -14,8 +14,12 @@ const DisplayFileList = () => {
 
     return (
         <div className='flex flex-col gap-5 lg:h-fit'>
-            <div className='flex flex-col gap-2 overflow-y-hidden'>
-                {data?.files.map(item => <FileItem key={item.id} data={item} />)}
+            <div className='flex flex-col gap-3 overflow-visible p-1'>
+                {data?.files.map(item => (
+                    <div key={item.id} className="overflow-visible">
+                        <FileItem data={item} />
+                    </div>
+                ))}
             </div>
             <Pagination 
                 color="primary" 
@@ -23,7 +27,7 @@ const DisplayFileList = () => {
                 onChange={handlePageChange}
                 sx={{
                     '& .MuiPaginationItem-root': {
-                        color: 'white',
+                        color: '#171717',
                     }
                 }}
             />

@@ -48,7 +48,7 @@ const data = [
 
 const DashboardSidebarComponent = () => {
     return (
-        <div className='flex flex-col'>
+        <div className='flex flex-col bg-white rounded-xl p-2 h-fit'>
            {data.map(item => (
             <SidebarItem key={item.id} title={item.title} icon={item.icon} href={item.href} />
            ))} 

@@ -1,17 +1,18 @@
 .file {
-    
+    position: relative;
 }
 
 .file-buttons {
     opacity: 0;
-    transition: opacity 0.3s ease
-}
-
-.file-buttons button {
-    cursor: pointer;
+    transform: translateX(10px);
+    transition: all 0.3s ease-in-out;
 }
 
 .file:hover .file-buttons {
     opacity: 1;
-    transition-delay: 0s, 0.3s;
+    transform: translateX(0);
+}
+
+.file-buttons button {
+    cursor: pointer;
 }

@@ -7,9 +7,9 @@ const DisplayStorageQuota = () => {
 
     return (
         <div className="grow">
-            <p className="text-sm mb-2 text-gray-300 ">Использовано: <span className="text-3xl text-white">{used} ГБ</span> из {total} ГБ</p>
+            <p className="text-sm mb-2 text-gray-600">Использовано: <span className="text-3xl text-gray-900">{used} ГБ</span> из {total} ГБ</p>
 
-            <div className="h-4 rounded-full overflow-hidden bg-gray-300 flex">
+            <div className="h-4 rounded-full overflow-hidden bg-gray-200 flex">
                 <div
                     className="bg-blue-500"
                     style={{ width: `${(video / total) * 100}%` }}
@@ -24,7 +24,7 @@ const DisplayStorageQuota = () => {
                 />
             </div>
 
-            <div className="flex gap-4 mt-2 text-xs text-gray-300">
+            <div className="flex gap-4 mt-2 text-xs text-gray-600">
                 <span>Видео: {video} ГБ</span>
                 <span>Фото: {photo} ГБ</span>
                 <span>Другое: {other} ГБ</span>

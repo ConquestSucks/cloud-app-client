@@ -17,7 +17,7 @@ export default function AuthPage() {
 
     return (
 
-        <div className="flex h-full md:flex-row flex-col gap-10 bg-[#0E0E0E] md:min-h-[384] md:h-fit md:rounded-3xl w-[840] p-[36]">
+        <div className="flex h-full md:flex-row flex-col gap-10 bg-white md:min-h-[384] md:h-fit md:rounded-3xl w-[840] p-[36]">
             <AuthPlateText />
             <AuthForm />
         </div>
