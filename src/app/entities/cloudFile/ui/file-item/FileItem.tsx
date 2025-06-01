@@ -9,16 +9,24 @@ import styles from "./FileItem.module.css"
 import FilePreview from "./FilePreview";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useFileDeleteWithoutRemove } from "../../hooks/useFileDeleteWithoutRemove";
+import { useFileDelete } from "../../hooks/useFileDelete";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 
 
 const FileItem = ({ fileData }: { fileData: CloudFile }) => {
-    const { mutate: deleteFileWithoutRemove } = useFileDeleteWithoutRemove()
+    const { mutate: deleteFileWithoutRemove } = useFileDeleteWithoutRemove();
+    const { mutate: deleteFile } = useFileDelete();
+    const [openDialogMoveToTrash, setOpenDialogMoveToTrash,] = React.useState(false);
+    const [openDialogDelete, setOpenDialogDelete] = React.useState(false);
     const handleFileDeleteWithoutRemove = () => {
         deleteFileWithoutRemove(fileData.key);
-        setOpenDialogRemove(false);
+        setOpenDialogMoveToTrash(false);
     }
-      const [openDialogRemove, setOpenDialogRemove] = React.useState(false);
+    const handleFileDelete = () => {
+        console.log(fileData.key)
+        deleteFile(fileData.key);
+        setOpenDialogDelete(false);
+    }
 
     return (
         <div className={`${styles.file} flex gap-2 items-center justify-between p-3 bg-white rounded-xl border border-gray-200 hover:border-blue-400 hover:bg-blue-50/30 hover:shadow-lg hover:scale-[1.005] hover:z-10 duration-300 ease-in-out transform`}>
@@ -32,10 +40,11 @@ const FileItem = ({ fileData }: { fileData: CloudFile }) => {
                 <button className="text-gray-600 hover:text-blue-600"><IosShareIcon /></button>
                 <button className="text-gray-600 hover:text-blue-600"><DownloadIcon /></button>
                 <button className="text-gray-600 hover:text-blue-600"><EditIcon /></button>
-                {!fileData.deletedAt && <button onClick={() => setOpenDialogRemove(true)} className="text-gray-600 hover:text-red-600"><DeleteIcon /></button>}
+                {!fileData.deletedAt && <button onClick={() => setOpenDialogMoveToTrash(true)} className="text-gray-600 hover:text-red-600"><DeleteIcon /></button>}
+                {fileData.deletedAt && <button onClick={() => setOpenDialogDelete(true)} className="text-gray-600 hover:text-red-600"><DeleteIcon /></button>}
                 <Dialog
-                    open={openDialogRemove}
-                    onClose={() => setOpenDialogRemove(false)}
+                    open={openDialogMoveToTrash}
+                    onClose={() => setOpenDialogMoveToTrash(false)}
                     PaperProps={{
                         style: {
                             backgroundColor: '#ffffff',
@@ -53,8 +62,34 @@ const FileItem = ({ fileData }: { fileData: CloudFile }) => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => setOpenDialogRemove(false)}>Отменить</Button>
+                        <Button onClick={() => setOpenDialogMoveToTrash(false)}>Отменить</Button>
                         <Button onClick={handleFileDeleteWithoutRemove} autoFocus>
+                            Продолжить
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    open={openDialogDelete}
+                    onClose={() => setOpenDialogDelete(false)}
+                    PaperProps={{
+                        style: {
+                            backgroundColor: '#ffffff',
+                            color: '#171717',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                        }
+                    }}
+                >
+                    <DialogTitle id="alert-dialog-title" style={{ color: '#171717' }}>
+                        {"Удалить файл?"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description" style={{ color: '#666666' }}>
+                            После нажатия кнопки &rsquo;&rsquo;Продолжить&rsquo;&rsquo; ваш файл будет удален без возможности восстановления
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpenDialogDelete(false)}>Отменить</Button>
+                        <Button onClick={handleFileDelete} autoFocus>
                             Продолжить
                         </Button>
                     </DialogActions>
