@@ -13,8 +13,10 @@ import { useFileDeleteWithoutRemove } from "../../hooks/useFileDeleteWithoutRemo
 import { useFileDelete } from "../../hooks/useFileDelete";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useRestoreFile } from "../../hooks/useRestoreFile";
+import { useDownloadFile } from "../../hooks/useDownloadFile";
 
 const FileItem = ({ fileData }: { fileData: CloudFile }) => {
+    const { mutate: downloadFile } = useDownloadFile();
     const { mutate: deleteFileWithoutRemove } = useFileDeleteWithoutRemove();
     const { mutate: deleteFile } = useFileDelete();
     const { mutate: restoreFile } = useRestoreFile();
@@ -22,6 +24,10 @@ const FileItem = ({ fileData }: { fileData: CloudFile }) => {
     const [openDialogMoveToTrash, setOpenDialogMoveToTrash,] = React.useState(false);
     const [openDialogDelete, setOpenDialogDelete] = React.useState(false);
     const [openDialogRestore, setOpenDialogRestore] = React.useState(false);
+
+    const handleFileDownload = () => {
+        downloadFile(fileData.key)
+    }
 
     const handleFileDeleteWithoutRemove = () => {
         deleteFileWithoutRemove(fileData.key);
@@ -48,7 +54,7 @@ const FileItem = ({ fileData }: { fileData: CloudFile }) => {
             {!fileData.deletedAt ? (
                 <div className={`${styles["file-buttons"]} flex gap-2 align-center`}>
                     <button className="text-gray-600 hover:text-blue-600"><IosShareIcon /></button>
-                    <button className="text-gray-600 hover:text-blue-600"><DownloadIcon /></button>
+                    <button onClick={handleFileDownload} className="text-gray-600 hover:text-blue-600"><DownloadIcon /></button>
                     <button className="text-gray-600 hover:text-blue-600"><EditIcon /></button>
                     <button onClick={() => setOpenDialogMoveToTrash(true)} className="text-gray-600 hover:text-red-600"><DeleteIcon /></button>
                 </div>
