@@ -1,17 +1,52 @@
 'use client'
 
-import { Link } from '@mui/material'
+import { Link, Typography, Box } from '@mui/material'
 import React from 'react'
+import LoginIcon from '@mui/icons-material/Login';
 
 const AuthPlateText = () => {
   return (
-    <div className='flex flex-col gap-5 shrink-1 grow-1 basis-0'>
-        <h1 className='text-5xl'>Вход</h1>
-        <div className='flex flex-col gap-[4px]'>
-            <span>Для входа вам потребуется получить логин в нашем телеграм боте</span>
-            <Link href="https://t.me/dev_cloud_app_bot" target="_blank" rel="noopener noreferrer" className='w-fit'>Получить логин</Link>
-        </div>
-    </div>
+    <Box 
+        sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2.5,
+            flexBasis: '0',
+            flexGrow: 1,
+            flexShrink: 1,
+        }}
+    >
+        <Typography 
+            variant="h3" 
+            component="h1" 
+            sx={{
+                fontWeight: 'bold',
+                color: 'primary.dark',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5
+            }}
+        >
+            <LoginIcon sx={{ fontSize: '2.8rem' }} />
+            Вход
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+            <Typography variant="body1" color="text.secondary">
+                Для входа вам потребуется получить логин в нашем телеграм боте.
+            </Typography>
+            <Link 
+                href="https://t.me/dev_cloud_app_bot" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                sx={{
+                    width: 'fit-content',
+                    fontWeight: 'medium',
+                }}
+            >
+                Получить логин
+            </Link>
+        </Box>
+    </Box>
   )
 }
 

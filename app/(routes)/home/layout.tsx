@@ -1,14 +1,20 @@
+'use client'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React from "react";
+
 export default function HomeLayout({
-  children,
-  navbar
+  children
 }: {
   children: React.ReactNode;
   navbar: React.ReactNode;
 }) {
+  const [queryClient] = React.useState(() => new QueryClient());
+
   return (
-    <div className="h-full">
-      {navbar}
-      {children}
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div className="h-full">
+        {children}
+      </div>
+    </QueryClientProvider>
   );
 }

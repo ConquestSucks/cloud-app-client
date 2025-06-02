@@ -4,6 +4,13 @@ import { getIsUserLoggedIn } from "../../api/getIsUserLoggedIn"
 export const useGetIsUserLoggedIn = () => {
     return useQuery({
         queryKey: ["isAuthenticated"],
-        queryFn: getIsUserLoggedIn
+        queryFn: getIsUserLoggedIn,
+        retry: (failureCount, error: any) => {
+            if (error?.response?.status === 401) {
+                return false;
+            }
+
+            return failureCount < 3;
+        }
     })
 }

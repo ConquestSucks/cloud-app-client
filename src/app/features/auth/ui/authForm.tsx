@@ -1,108 +1,146 @@
 "use client";
 
-import { Button, Link, styled, TextField } from "@mui/material";
+import { Button, Link, TextField, Box, Typography, CircularProgress, Alert } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePostUserLogin } from "../hooks/usePostUserLogin";
 import { LoginData } from "../model/types";
 import { useRouter } from "next/navigation";
-
-const CustomTextField = styled(TextField)({
-    '& input': {
-        color: '#171717',
-    },
-    '& label': {
-        color: '#666666',
-    },
-    '& label.Mui-focused': {
-        color: '#1976d2',
-        transition: "0.4s"
-    },
-    '& .MuiOutlinedInput-root': {
-        backgroundColor: '#ffffff',
-        '& fieldset': {
-            borderColor: '#666666',
-            transition: "0.4s"
-        },
-        '&:hover fieldset': {
-            borderColor: "#1976d2",
-            transition: "0.4s"
-        },
-        '&.Mui-focused fieldset': {
-            borderColor: "#1976d2",
-            transition: "0.4s"
-        },
-    },
-});
-
-const CustomButton = styled(Button)({
-    backgroundColor: '#1976d2',
-    color: '#ffffff',
-    '&:hover': {
-        backgroundColor: '#1565c0',
-    },
-    '&.Mui-disabled': {
-        backgroundColor: '#e0e0e0',
-        color: '#9e9e9e',
-    },
-});
+import TextMaskAdapter from "@/app/shared/ui/TextMaskAdapter";
+import { checkIsUserExists } from "../api/checkIsUserExists";
 
 const AuthForm = () => {
     const router = useRouter();
-    const { mutate, error, isPending } = usePostUserLogin(router);
-    const [login, setLogin] = useState("")
+    const { mutate: loginMutate, error: loginError, isPending: isLoginPending } = usePostUserLogin(router);
+    const [login, setLogin] = useState("");
     const [validationError, setValidationError] = useState("");
-    const [isMounted, setIsMounted] = useState(false);
-    
+    const [isCheckingUser, setIsCheckingUser] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        const formData: LoginData = {
-            login: login,
-        };
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const expectedFormat = /^\d{12}-[a-zA-Z]{4}$/;
+        setValidationError("");
 
-        if (formData.login.length !== 17) {
-            setValidationError("Неверный формат логина")
+        if (login.trim().length === 0) {
+            setValidationError("Логин не может быть пустым.");
+            return;
+        } 
+        if (!expectedFormat.test(login)) {
+            setValidationError("Логин не заполнен полностью или имеет неверный формат.");
             return;
         }
 
-        setValidationError("");
-        mutate(formData);
+        setIsCheckingUser(true);
+        const userExists = await checkIsUserExists(login);
+        setIsCheckingUser(false);
+
+        if (!userExists) {
+            setValidationError("Пользователь с таким логином не найден.");
+            return;
+        }
+
+        const formData: LoginData = {
+            login: login,
+        };
+        loginMutate(formData);
+    };
+
+    const isLoading = isCheckingUser || isLoginPending;
+
+    let feedbackMessage: React.ReactNode = null;
+    let feedbackSeverity: "error" | "info" | "success" | "warning" = "info";
+
+    if (validationError) {
+        feedbackMessage = validationError;
+        feedbackSeverity = "error";
+    } else if ((loginError as any)?.response?.status === 408) {
+        feedbackMessage = "Время ожидания подтверждения в Telegram истекло. Попробуйте снова.";
+        feedbackSeverity = "error";
+    } else if (loginError && loginError.response?.data?.error) {
+        feedbackMessage = `Ошибка: ${loginError.response.data.error}`;
+        feedbackSeverity = "error";
+    } else if (loginError) {
+        feedbackMessage = "Произошла неизвестная ошибка при входе.";
+        feedbackSeverity = "error";
+    } else if (isLoginPending) {
+        feedbackMessage = "Подтвердите вход в телеграме...";
+        feedbackSeverity = "info";
+    } else if (isCheckingUser) {
+        feedbackMessage = "Проверка пользователя...";
+        feedbackSeverity = "info";
     }
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
     return (
-        <form className="flex flex-col justify-center flex-center gap-12 shrink-1 grow-1 basis-0" onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-2">
-                <CustomTextField
-                    id="outlined-basic"
-                    name="login"
-                    label="Логин"
-                    value={login}
-                    onChange={(e) => setLogin(e.target.value)}
-                    autoComplete="off"
-                    variant="outlined"
-                    className="border-white"
-                />
-                <Link href="/" target="_blank" rel="noopener noreferrer" className="w-fit">Проблемы с получением логина</Link>
-            </div>
-            <CustomButton type="submit" variant="contained" disabled={isPending}>
-                {isPending && !error ? "Загрузка" : "Далее"}
-            </CustomButton>
-            <div
-                className={`transition-all duration-500 ease-in-out overflow-hidden text-red-100
-                    ${isMounted && (error || isPending || validationError)
-                        ? "max-h-20 opacity-100 translate-y-0"
-                        : "max-h-0 opacity-0 -translate-y-2"
-                    }`}
+        <Box 
+            component="form" 
+            noValidate
+            onSubmit={handleSubmit} 
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                gap: 3,
+                flexBasis: '0',
+                flexGrow: 1,
+                flexShrink: 1,
+                width: '100%'
+            }}
+        >
+            <TextField
+                id="login-textfield"
+                name="login"
+                label="Логин"
+                placeholder="893451977335-ziye"
+                value={login}
+                onChange={(event) => {
+                    setLogin(event.target.value);
+                    if (validationError) setValidationError("");
+                }}
+                autoComplete="off"
+                variant="outlined"
+                required
+                fullWidth
+                disabled={isLoading}
+                error={!!validationError || (!!loginError && !isLoginPending && !isCheckingUser)}
+                InputProps={{
+                    inputComponent: TextMaskAdapter as any,
+                }}
+                sx={{
+                    '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                            borderColor: 'primary.light',
+                        },
+                        '&.Mui-focused fieldset': {
+                            borderColor: 'primary.main',
+                        },
+                    },
+                    '& label.Mui-focused': {
+                        color: 'primary.main',
+                    },
+                }}
+            />
+            
+            <Button 
+                type="submit" 
+                variant="contained" 
+                disabled={isLoading}
+                fullWidth
+                size="large"
+                sx={{
+                    py: 1.5,
+                    fontWeight: 'medium',
+                    textTransform: 'none',
+                    fontSize: '1.05rem'
+                }}
             >
-                {validationError && !error && <span>{validationError}</span>}
-                {!error && isPending && <span>Подтвердите вход в телеграме</span>}
-                {error && error.response && error.response.data && error.response.data.error && <span>Ошибка: {error.response.data.error}</span>}
-            </div>
-        </form>
+                {isLoading ? <CircularProgress size={24} color="inherit" /> : "Войти"}
+            </Button>
+
+            {feedbackMessage && (
+                <Alert severity={feedbackSeverity} sx={{ mt: 1 }}>
+                    {feedbackMessage}
+                </Alert>
+            )}
+        </Box>
     );
 };
 
