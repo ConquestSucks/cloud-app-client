@@ -2,6 +2,7 @@ import axiosInstance from '@/app/shared/api/axios';
 
 export interface UserDto {
     id: string;
+    name: string;
     displayName: string;
     freeDiskSpace: number;
     diskSpaceOccupied: number;
