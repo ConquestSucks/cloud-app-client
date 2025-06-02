@@ -12,7 +12,8 @@ import {
     IconButton,
     Box,
     CircularProgress,
-    Typography
+    Typography,
+    Skeleton
 } from '@mui/material';
 import { PhotoCamera } from '@mui/icons-material';
 import { UserDto } from '@/app/features/storage-quota/api/getSelfUser';
@@ -22,68 +23,76 @@ interface ProfileModalProps {
     onClose: () => void;
     userData: UserDto | null | undefined;
     onSave: (updatedData: Partial<UserDto & { avatarFile?: File }>) => Promise<void>; 
+    currentAvatarBlobUrl: string | null;
+    isCurrentAvatarLoading: boolean;
 }
 
-const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, userData, onSave }) => {
+const ProfileModal: React.FC<ProfileModalProps> = ({ 
+    open, 
+    onClose, 
+    userData, 
+    onSave, 
+    currentAvatarBlobUrl, 
+    isCurrentAvatarLoading 
+}) => {
     const [displayName, setDisplayName] = useState('');
-    const [avatarFile, setAvatarFile] = useState<File | null>(null);
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
+    const [newAvatarPreview, setNewAvatarPreview] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
-        if (userData) {
-            setDisplayName(userData.displayName || '');
-            // Если у UserDto есть поле avatarUrl, его можно установить здесь:
-            // setAvatarPreview(userData.avatarUrl || null);
-        }
-        if (!open) { // Сброс состояния при закрытии модального окна
-            setAvatarFile(null);
-            setAvatarPreview(null); 
+        if (open) {
             if (userData) {
-                 setDisplayName(userData.displayName || '');
+                setDisplayName(userData.displayName || '');
+            }
+        } else {
+            setNewAvatarFile(null);
+            if (newAvatarPreview) {
+                URL.revokeObjectURL(newAvatarPreview);
+                setNewAvatarPreview(null);
             }
         }
-    }, [userData, open]);
+    }, [userData, open, newAvatarPreview]);
 
     const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
-            setAvatarFile(file);
+            setNewAvatarFile(file);
+            if (newAvatarPreview) {
+                URL.revokeObjectURL(newAvatarPreview);
+            }
             const reader = new FileReader();
             reader.onloadend = () => {
-                setAvatarPreview(reader.result as string);
+                setNewAvatarPreview(reader.result as string);
             };
             reader.readAsDataURL(file);
         }
     };
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
-        e.preventDefault(); // Предотвращаем стандартное поведение формы
+        e.preventDefault();
         if (!userData) return;
-        
         const trimmedDisplayName = displayName.trim();
-        if (!trimmedDisplayName) {
-            return; // Имя не может быть пустым, TextField уже должен это показать
-        }
+        if (!trimmedDisplayName) return;
 
         setIsSaving(true);
-        const updatedData: Partial<UserDto & { avatarFile?: File }> = {};
-        
-        if (trimmedDisplayName !== userData.displayName) {
-            updatedData.displayName = trimmedDisplayName;
-        }
-        if (avatarFile) {
-            updatedData.avatarFile = avatarFile;
+        const updatedData: Partial<UserDto & { avatarFile?: File }> = {
+            displayName: trimmedDisplayName,
+        };
+
+        if (newAvatarFile) {
+            updatedData.avatarFile = newAvatarFile;
         }
 
         try {
             await onSave(updatedData);
-            if (avatarFile) {
-                setAvatarFile(null); // Сбрасываем файл после успешной отправки
+            if (newAvatarFile) {
+                setNewAvatarFile(null);
+                if(newAvatarPreview) URL.revokeObjectURL(newAvatarPreview);
+                setNewAvatarPreview(null);
             }
             onClose(); 
         } catch (error) {
-            console.error("Failed to save profile data:", error);
         } finally {
             setIsSaving(false);
         }
@@ -94,7 +103,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, userData, on
         try {
             const date = new Date(dateString);
             if (isNaN(date.getTime())) {
-                console.warn("Invalid date string for formatDate:", dateString);
                 return dateString; 
             }
             return date.toLocaleDateString('ru-RU', {
@@ -103,7 +111,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, userData, on
                 day: 'numeric'
             });
         } catch (e) {
-            console.error("Error formatting date:", e);
             return dateString; 
         }
     };
@@ -117,8 +124,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, userData, on
     }
     
     const isDisplayNameChanged = displayName.trim() !== userData.displayName && displayName.trim() !== '';
-    const isAvatarChanged = !!avatarFile;
+    const isAvatarChanged = !!newAvatarFile;
     const canSaveChanges = (isDisplayNameChanged || isAvatarChanged) && displayName.trim() !== '';
+
+    const avatarDisplayUrl = newAvatarPreview || currentAvatarBlobUrl;
+    const avatarDisplayKey = newAvatarPreview ? 'new-preview-' + (newAvatarFile?.name || 'file') : (currentAvatarBlobUrl || userData?.id || 'modal-avatar-placeholder');
 
     return (
         <Dialog 
@@ -126,22 +136,28 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, userData, on
             onClose={handleCloseDialog} 
             maxWidth="xs" 
             fullWidth 
-            PaperProps={{component: 'form', onSubmit: handleSubmit}} // Используем onSubmit здесь
+            PaperProps={{component: 'form', onSubmit: handleSubmit}}
         >
             <DialogTitle sx={{ textAlign: 'center', pb: 1 }}>Профиль пользователя</DialogTitle>
             <DialogContent dividers sx={{ pt: 1 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 1, mb: 2 }}>
                     <Box sx={{ position: 'relative', mb: 1 }}>
-                        <Avatar 
-                            src={avatarPreview /* || userData.avatarUrl */ || undefined} 
-                            sx={{ width: 100, height: 100, fontSize: '3rem' }}
-                        >
-                            {(!avatarPreview && /* !userData.avatarUrl && */ userData.displayName) ? userData.displayName.charAt(0).toUpperCase() : ' '}
-                        </Avatar>
+                        {isCurrentAvatarLoading ? (
+                            <Skeleton variant="circular" width={100} height={100} />
+                        ) : (
+                            <Avatar 
+                                key={avatarDisplayKey} 
+                                src={avatarDisplayUrl || undefined} 
+                                sx={{ width: 100, height: 100, fontSize: '3rem' }}
+                            >
+                                {(!avatarDisplayUrl && userData.displayName) ? userData.displayName.charAt(0).toUpperCase() : ' '}
+                            </Avatar>
+                        )}
                         <IconButton 
                             color="primary" 
                             aria-label="upload picture" 
                             component="label" 
+                            disabled={isCurrentAvatarLoading}
                             sx={{
                                 position: 'absolute',
                                 bottom: 0,
@@ -203,7 +219,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, userData, on
             </DialogContent>
             <DialogActions sx={{ p: '16px 24px'}}>
                 <Button onClick={handleCloseDialog} color="inherit" variant="outlined" sx={{ mr: 1 }}>Отмена</Button>
-                <Button type="submit" color="primary" variant="contained" disabled={isSaving || !canSaveChanges}>
+                <Button type="submit" color="primary" variant="contained" disabled={isSaving || !canSaveChanges || isCurrentAvatarLoading}>
                     {isSaving ? <CircularProgress size={24} color="inherit" /> : 'Сохранить'}
                 </Button>
             </DialogActions>

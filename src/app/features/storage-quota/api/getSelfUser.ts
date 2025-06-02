@@ -9,9 +9,10 @@ export interface UserDto {
     diskSpace: number;
     createdAt: string;
     modifiedAt: string;
+    avatarTimestamp?: number;
 }
 
 export const getSelfUser = async (): Promise<UserDto> => {
     const response = await axiosInstance.get('/api/v1/users/getSelfUser');
-    return response.data;
+    return { ...response.data, avatarTimestamp: Date.now() };
 }; 

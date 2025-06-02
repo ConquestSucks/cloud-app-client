@@ -13,10 +13,24 @@ import CloudDoneIcon from '@mui/icons-material/CloudDone';
 import DevicesIcon from '@mui/icons-material/Devices';
 import SpeedIcon from '@mui/icons-material/Speed';
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
+import UserDisplayComponent from '@/app/shared/ui/UserDisplayComponent';
+import { useUserAvatarLoader } from '@/app/shared/hooks/useUserAvatarLoader';
 
 // Первая секция
-const HeroSection = ({ isLoggedIn, userData, onScrollToNextSection }: { isLoggedIn: boolean, userData?: UserDto, onScrollToNextSection: () => void }) => {
+const HeroSection = ({ 
+    isLoggedIn, 
+    userData, 
+    isUserQueryLoading,
+    onScrollToNextSection 
+}: { 
+    isLoggedIn: boolean, 
+    userData?: UserDto | null, 
+    isUserQueryLoading: boolean,
+    onScrollToNextSection: () => void 
+}) => {
     const router = useRouter();
+    const { avatarBlobUrl, isAvatarLoading } = useUserAvatarLoader(userData);
+
     return (
         <Box 
             component="section" 
@@ -33,49 +47,15 @@ const HeroSection = ({ isLoggedIn, userData, onScrollToNextSection }: { isLogged
             }}
         >
             <Box sx={{ position: 'absolute', top: 24, right: 24 }}>
-                {isLoggedIn && userData ? (
-                    <Paper 
-                        elevation={4}
-                        onClick={() => router.push('/dashboard/home')}
-                        sx={{
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: 1.5,
-                            p: '10px 16px',
-                            borderRadius: '20px',
-                            bgcolor: 'rgba(255, 255, 255, 0.9)',
-                            backdropFilter: 'blur(8px)',
-                            boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.1)',
-                            transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-                            cursor: 'pointer',
-                            '&:hover': {
-                                transform: 'scale(1.03)',
-                                boxShadow: '0px 6px 18px rgba(0, 0, 0, 0.12)',
-                            }
-                        }}
-                    >
-                        <MuiAvatar 
-                            sx={{ 
-                                bgcolor: 'primary.main', 
-                                width: 40,
-                                height: 40,
-                                color: 'white',
-                            }}
-                        >
-                           <AccountCircleIcon sx={{ fontSize: 26 }}/>
-                        </MuiAvatar>
-                        <Typography 
-                            variant="subtitle1" 
-                            sx={{ 
-                                fontWeight: 500,
-                                color: 'text.primary',
-                                fontSize: '0.95rem',
-                                letterSpacing: '0.2px'
-                            }}
-                        >
-                            {userData.displayName}
-                        </Typography>
-                    </Paper>
+                {isLoggedIn ? (
+                    <UserDisplayComponent
+                        userData={userData}
+                        avatarBlobUrl={avatarBlobUrl}
+                        isUserLoading={isUserQueryLoading}
+                        isAvatarLoading={isAvatarLoading}
+                        onClick={() => router.push('/dashboard')}
+                        variant="homePage"
+                    />
                 ) : (
                     <Button 
                         variant="contained" 
@@ -248,25 +228,12 @@ const AdvantagesSection = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                                         <IconComponent sx={{ fontSize: 48, color: 'primary.main', mb: 2.5 }} />
                                         <Typography 
                                             variant="h5" 
-                                            component="h3" 
-                                            sx={{
-                                                fontWeight: 600, 
-                                                color: 'primary.dark', 
-                                                mb: 1.5, 
-                                                letterSpacing: '0.2px'
-                                            }}
+                                            component="h3"
+                                            sx={{ fontWeight: '600', mb: 1.5, color: 'text.primary' }}
                                         >
                                             {adv.title}
                                         </Typography>
-                                        <Typography 
-                                            variant="body1" 
-                                            sx={{
-                                                color: 'text.secondary', 
-                                                textAlign: 'center', 
-                                                lineHeight: 1.55, 
-                                                fontSize: '0.95rem' 
-                                            }}
-                                        >
+                                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, flexGrow: 1 }}>
                                             {adv.description}
                                         </Typography>
                                     </CardContent>
@@ -275,29 +242,26 @@ const AdvantagesSection = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                         );
                     })}
                 </div>
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: {xs: 6, md: 8} }}>
+                <Box sx={{ textAlign: 'center', mt: {xs: 6, md: 8} }}>
                     <Button 
                         variant="contained" 
-                        color="primary"
+                        color="primary" 
                         size="large"
-                        onClick={handleStartWork} 
-                        sx={{
+                        onClick={handleStartWork}
+                        sx={{ 
+                            minWidth: '220px', 
+                            py: 1.5, 
                             textTransform: 'none', 
-                            fontWeight: 600,
-                            px: 5, 
-                            py: 1.75,
-                            borderRadius: '16px',
-                            letterSpacing: '0.5px',
+                            borderRadius: '12px', 
                             fontSize: '1.1rem',
-                            boxShadow: '0px 6px 18px rgba(0, 110, 255, 0.3)',
-                            transition: 'transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out',
+                            transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
                             '&:hover': {
-                                transform: 'translateY(-3px) scale(1.03)',
-                                boxShadow: '0px 8px 25px rgba(0, 100, 230, 0.45)',
+                                transform: 'translateY(-3px)',
+                                boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.15)',
                             }
                         }}
                     >
-                        Начать работу
+                        {isLoggedIn ? 'Перейти в хранилище' : 'Начать работу'}
                     </Button>
                 </Box>
             </Container>
@@ -306,122 +270,70 @@ const AdvantagesSection = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
 };
 
 const HomePage = () => {
-    const { data: isLoggedInStatus, isLoading: isAuthLoading, isSuccess: isAuthSuccess, isError: isAuthError, error: authError } = useGetIsUserLoggedIn();
-    
-    const isAuthenticated = isAuthSuccess && isLoggedInStatus === 200;
+    const advantagesRef = useRef<HTMLDivElement>(null);
+    const { data: isLoggedInStatus, isLoading: isAuthLoading } = useGetIsUserLoggedIn();
+    const isAuthenticated = !isAuthLoading && isLoggedInStatus === 200;
 
-    const { data: userData, isLoading: isUserLoading } = useQuery<UserDto>({
+    const { data: userData, isLoading: isUserQueryLoading } = useQuery<UserDto>({
         queryKey: ["selfUser"],
         queryFn: getSelfUser,
-        enabled: isAuthenticated, 
+        enabled: isAuthenticated,
+        refetchOnWindowFocus: false, 
     });
 
-    const heroSectionRef = useRef<HTMLDivElement>(null);
-    const advantagesSectionRef = useRef<HTMLDivElement>(null);
+    const heroRef = useRef<HTMLDivElement>(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
     
-    const [scrollContainerNode, setScrollContainerNode] = useState<HTMLDivElement | null>(null);
-    const scrollContainerRefCallback = useCallback((node: HTMLDivElement | null) => {
-        if (node !== null) {
-            setScrollContainerNode(node);
-        }
-    }, []);
+    const [currentView, setCurrentView] = useState<'hero' | 'advantages'>('hero');
+    const currentViewRef = React.useRef(currentView);
+    useEffect(() => { currentViewRef.current = currentView; }, [currentView]);
 
-    type CurrentView = 'hero' | 'advantages';
-    const [currentView, setCurrentView] = useState<CurrentView>('hero');
-    const currentViewRef = useRef<CurrentView>(currentView);
-
-    const isAnimatingScrollRef = useRef(false);
-    const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-    useEffect(() => {
-        currentViewRef.current = currentView;
-    }, [currentView]);
+    const isAnimatingScrollRef = React.useRef(false);
+    const animationTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
     const scrollToHero = useCallback(() => {
-        if (heroSectionRef.current) {
+        if (heroRef.current) {
             isAnimatingScrollRef.current = true;
-            heroSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+            heroRef.current.scrollIntoView({ behavior: 'smooth' });
             setCurrentView('hero'); 
             if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
             animationTimeoutRef.current = setTimeout(() => {
                 isAnimatingScrollRef.current = false;
             }, 700); 
         }
-    }, [setCurrentView]);
+    }, []);
 
     const scrollToAdvantages = useCallback(() => {
-        if (advantagesSectionRef.current) {
+        if (advantagesRef.current) {
             isAnimatingScrollRef.current = true;
-            advantagesSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+            advantagesRef.current.scrollIntoView({ behavior: 'smooth' });
             setCurrentView('advantages'); 
             if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
             animationTimeoutRef.current = setTimeout(() => {
                 isAnimatingScrollRef.current = false;
             }, 700); 
         }
-    }, [setCurrentView]);
-
+    }, []);
+    
     useEffect(() => {
-        if (!scrollContainerNode) {
-            return; 
-        }
+        const container = scrollContainerRef.current;
+        if (!container) return;
 
-        const container = scrollContainerNode; 
         const originalBodyOverflow = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
-
-        const handleVisibilityChange = () => {
-            if (document.visibilityState === 'visible') {
-                if (document.body.style.overflow !== 'hidden') {
-                    document.body.style.overflow = 'hidden';
-                }
-                if (isAnimatingScrollRef.current) {
-                    isAnimatingScrollRef.current = false;
-                }
-                if (animationTimeoutRef.current) {
-                    clearTimeout(animationTimeoutRef.current);
-                    animationTimeoutRef.current = null;
-                }
-            }
-        };
-
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-
-        const observerOptions = {
-            root: container, 
-            threshold: 0.6, 
-        };
-
-        const heroObserver = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting && !isAnimatingScrollRef.current) { 
-                setCurrentView('hero');
-            }
-        }, observerOptions);
-
-        const advantagesObserver = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting && !isAnimatingScrollRef.current) { 
-                setCurrentView('advantages');
-            }
-        }, observerOptions);
-
-        if (heroSectionRef.current) heroObserver.observe(heroSectionRef.current);
-        if (advantagesSectionRef.current) advantagesObserver.observe(advantagesSectionRef.current);
+        document.body.style.overflow = 'hidden'; 
 
         const handleWheel = (event: WheelEvent) => {
-            const activeView = currentViewRef.current;
-
             if (isAnimatingScrollRef.current) {
                 event.preventDefault(); 
                 return;
             }
-
             if (event.deltaY > 0) { 
-                if (activeView === 'hero') {
+                if (currentViewRef.current === 'hero') {
                     event.preventDefault(); 
                     scrollToAdvantages();
                 } 
             } else { 
-                if (activeView === 'advantages') {
+                if (currentViewRef.current === 'advantages') {
                     event.preventDefault(); 
                     scrollToHero();
                 } 
@@ -431,13 +343,6 @@ const HomePage = () => {
         container.addEventListener('wheel', handleWheel, { passive: false });
 
         return () => {
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            if (heroSectionRef.current) {
-                heroObserver.unobserve(heroSectionRef.current);
-            }
-            if (advantagesSectionRef.current) {
-                advantagesObserver.unobserve(advantagesSectionRef.current);
-            }
             if (container) {
                  container.removeEventListener('wheel', handleWheel);
             }
@@ -446,58 +351,35 @@ const HomePage = () => {
             }
             document.body.style.overflow = originalBodyOverflow;
         };
-    }, [scrollContainerNode, scrollToHero, scrollToAdvantages, setCurrentView]);
-
-    if (isAuthLoading) { 
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <p className="text-2xl text-gray-600">Проверка авторизации...</p>
-            </div>
-        );
-    }
-
-    if (isAuthError && authError?.response?.status !== 401) {
-  return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <p className="text-2xl text-red-600">Ошибка авторизации. Попробуйте позже.</p>
-            </div>
-        );
-    }
+    }, [scrollToHero, scrollToAdvantages]);
     
-    if (isAuthenticated && isUserLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <p className="text-2xl text-gray-600">Загрузка данных пользователя...</p>
-            </div>
-        );
-    }
+    const combinedIsUserLoading = isAuthLoading || (isAuthenticated && isUserQueryLoading);
 
     return (
-        <div 
-            ref={scrollContainerRefCallback} 
-            style={{
-                height: '100vh',
-                overflowY: 'scroll',
-                userSelect: 'none', // Стандартное свойство
-                WebkitUserSelect: 'none', // Для Safari, Chrome (старыe версии)
-                MozUserSelect: 'none',    // Для Firefox
-                msUserSelect: 'none'      // Для IE/Edge (старыe версии)
+        <Box 
+            ref={scrollContainerRef}
+            sx={{ 
+                overflowY: 'scroll', 
+                height: '100vh', 
+                scrollSnapType: 'y mandatory',
+                userSelect: 'none',
+                WebkitUserSelect: 'none',
+                MozUserSelect: 'none',
+                msUserSelect: 'none'
             }}
-            className='w-full' 
-        >
-            <div 
-                ref={heroSectionRef} 
-                style={{ height: '100vh'}} 
-            >
-                 <HeroSection isLoggedIn={isAuthenticated} userData={userData} onScrollToNextSection={scrollToAdvantages} />
+        > 
+            <div ref={heroRef} style={{ height: '100vh', scrollSnapAlign: 'start' }}>
+                 <HeroSection 
+                    isLoggedIn={isAuthenticated} 
+                    userData={userData} 
+                    isUserQueryLoading={combinedIsUserLoading}
+                    onScrollToNextSection={scrollToAdvantages} 
+                />
             </div>
-            <div 
-                ref={advantagesSectionRef} 
-                style={{ height: '100vh'}} 
-            >
-                <AdvantagesSection isLoggedIn={isAuthenticated} />
+            <div ref={advantagesRef} style={{ height: '100vh', scrollSnapAlign: 'start' }}>
+                <AdvantagesSection isLoggedIn={isAuthenticated} /> 
             </div>
-        </div>
+        </Box>
     );
 };
 
