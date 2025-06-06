@@ -1,0 +1,25 @@
+########################
+# зависимости
+########################
+node_modules
+.pnpm-store
+
+########################
+# результаты сборки
+########################
+.next
+dist
+build
+out                 
+coverage
+
+########################
+# IDE и стек
+########################
+.vscode
+.idea
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
