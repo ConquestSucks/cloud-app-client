@@ -92,7 +92,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
                 setNewAvatarPreview(null);
             }
             onClose(); 
-        } catch (error) {
+        } catch {
+            // Error is handled by the parent component through onSave promise rejection
         } finally {
             setIsSaving(false);
         }
@@ -110,7 +111,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
                 month: 'long',
                 day: 'numeric'
             });
-        } catch (e) {
+        } catch {
             return dateString; 
         }
     };

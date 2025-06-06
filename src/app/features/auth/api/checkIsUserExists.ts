@@ -1,4 +1,5 @@
 import axiosInstance from "@/app/shared/api/axios";
+import { AxiosError } from "axios";
 
 export const checkIsUserExists = async (login: string): Promise<boolean> => {
     try {
@@ -8,8 +9,9 @@ export const checkIsUserExists = async (login: string): Promise<boolean> => {
             }
         });
         return response.data;
-    } catch (error: any) {
-        console.error("[checkIsUserExists] Error checking user existence:", error.response?.data || error.message);
+    } catch (error) {
+        const axiosError = error as AxiosError;
+        console.error("[checkIsUserExists] Error checking user existence:", axiosError.response?.data || axiosError.message);
         return false; 
     }
 }; 

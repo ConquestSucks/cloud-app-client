@@ -1,12 +1,17 @@
 "use client";
 
-import { Button, Link, TextField, Box, Typography, CircularProgress, Alert } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Button, TextField, Box, CircularProgress, Alert } from "@mui/material";
+import React, { useState } from "react";
 import { usePostUserLogin } from "../hooks/usePostUserLogin";
 import { LoginData } from "../model/types";
 import { useRouter } from "next/navigation";
 import TextMaskAdapter from "@/app/shared/ui/TextMaskAdapter";
 import { checkIsUserExists } from "../api/checkIsUserExists";
+import { AxiosError } from "axios";
+
+interface ErrorResponse {
+    error?: string;
+}
 
 const AuthForm = () => {
     const router = useRouter();
@@ -49,14 +54,16 @@ const AuthForm = () => {
     let feedbackMessage: React.ReactNode = null;
     let feedbackSeverity: "error" | "info" | "success" | "warning" = "info";
 
+    const axiosLoginError = loginError as AxiosError<ErrorResponse> | null;
+
     if (validationError) {
         feedbackMessage = validationError;
         feedbackSeverity = "error";
-    } else if ((loginError as any)?.response?.status === 408) {
+    } else if (axiosLoginError?.response?.status === 408) {
         feedbackMessage = "Время ожидания подтверждения в Telegram истекло. Попробуйте снова.";
         feedbackSeverity = "error";
-    } else if (loginError && loginError.response?.data?.error) {
-        feedbackMessage = `Ошибка: ${loginError.response.data.error}`;
+    } else if (axiosLoginError && axiosLoginError.response?.data?.error) {
+        feedbackMessage = `Ошибка: ${axiosLoginError.response.data.error}`;
         feedbackSeverity = "error";
     } else if (loginError) {
         feedbackMessage = "Произошла неизвестная ошибка при входе.";
@@ -102,6 +109,7 @@ const AuthForm = () => {
                 disabled={isLoading}
                 error={!!validationError || (!!loginError && !isLoginPending && !isCheckingUser)}
                 InputProps={{
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     inputComponent: TextMaskAdapter as any,
                 }}
                 sx={{

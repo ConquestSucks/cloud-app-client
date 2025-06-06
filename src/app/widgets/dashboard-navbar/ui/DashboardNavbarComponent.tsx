@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import SearchBar from "./SearchBar";
-import { AppBar, Toolbar, Box, useTheme, useMediaQuery, Skeleton } from "@mui/material";
+import { AppBar, Toolbar, Box, useTheme, useMediaQuery } from "@mui/material";
 import NavbarLogo from "@/app/shared/ui/NavbarLogo";
 import { useGetIsUserLoggedIn } from "@/app/features/auth/hooks/useGetIsUserLoggedIn";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -38,7 +38,7 @@ const updateProfileApiCall = async (data: Partial<UserDto & { avatarFile?: File 
                 params: queryParams,
             });
         }
-    } catch (error: any) {
+    } catch (error) {
         throw error; 
     }
 };
