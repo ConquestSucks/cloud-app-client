@@ -1,19 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { fileUpload } from "../api/fileUpload";
+import { AxiosProgressEvent } from "axios";
 
 export interface FileUploadParams {
     file: File;
-    options?: {
-        connectionId?: string;
-    };
+    connectionId: string;
+    onUploadProgress: (progressEvent: AxiosProgressEvent) => void;
 }
 
 export const useFileUpload = () => {
     const queryClient = useQueryClient();
     
     return useMutation({
-        mutationFn: async ({ file, options }: FileUploadParams) => {
-            return fileUpload(file, options);
+        mutationFn: async ({ file, connectionId, onUploadProgress }: FileUploadParams) => {
+            return fileUpload(file, { connectionId, onUploadProgress });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["userFiles"] });

@@ -25,7 +25,6 @@ const FileUploadForm = () => {
     const [openModal, setModalOpen] = useState(false);
     const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
     const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
-    const [currentFile, setCurrentFile] = useState<string | null>(null);
     const { mutateAsync, error, isPending } = useFileUpload();
 
     const isAllFilesUploaded = () => {
@@ -36,35 +35,11 @@ const FileUploadForm = () => {
         if (fileList && fileList.length) setModalOpen(true);
     }, [fileList]);
 
-    useEffect(() => {
-        const setupSignalR = async () => {
-            await signalRService.subscribeToProgress((percent) => {
-                if (currentFile) {
-                    setUploadProgress(prev => ({
-                        ...prev,
-                        [currentFile]: percent
-                    }));
-
-                    if (percent === 100) {
-                        setUploadedFiles(prev => [...prev, currentFile]);
-                    }
-                }
-            });
-        };
-
-        setupSignalR();
-
-        return () => {
-            signalRService.unsubscribeFromProgress();
-        };
-    }, [currentFile]);
-
     const handleCloseModal = () => {
         setModalOpen(false);
         setFileList(null);
         setUploadProgress({});
         setUploadedFiles([]);
-        setCurrentFile(null);
     };
 
     const handleRemoveFile = (fileName: string) => {
@@ -91,27 +66,26 @@ const FileUploadForm = () => {
 
         for (const file of files) {
             try {
-                setCurrentFile(file.name);
-                setUploadProgress(prev => ({ ...prev, [file.name]: 0 }));
-                
                 await mutateAsync({
                     file,
-                    options: {
-                        connectionId
+                    connectionId,
+                    onUploadProgress: (progressEvent) => {
+                        const percentCompleted = progressEvent.total
+                            ? Math.round((progressEvent.loaded * 100) / progressEvent.total)
+                            : 0;
+                        setUploadProgress(prev => ({ ...prev, [file.name]: percentCompleted }));
                     }
                 });
                 
-                // Файл считается полностью загруженным только когда прогресс от SignalR 100%
-                // и запрос завершился успешно
-                if (uploadProgress[file.name] === 100) {
-                    setUploadedFiles(prev => [...prev, file.name]);
-                }
+                // После успешной мутации (когда axios-запрос завершился)
+                // устанавливаем прогресс в 100%, если он еще не там
+                setUploadProgress(prev => ({ ...prev, [file.name]: 100 }));
+                setUploadedFiles(prev => [...prev, file.name]);
+
             } catch (error) {
                 console.error(`Error uploading ${file.name}:`, error);
             }
         }
-
-        setCurrentFile(null);
     };
 
     return (
@@ -130,7 +104,6 @@ const FileUploadForm = () => {
                         setFileList(e.target.files);
                         setUploadProgress({});
                         setUploadedFiles([]);
-                        setCurrentFile(null);
                     }}
                     multiple
                 />
