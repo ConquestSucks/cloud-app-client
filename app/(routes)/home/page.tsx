@@ -15,7 +15,6 @@ import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 import UserDisplayComponent from '@/app/shared/ui/UserDisplayComponent';
 import { useUserAvatarLoader } from '@/app/shared/hooks/useUserAvatarLoader';
 
-// Первая секция
 const HeroSection = ({ 
     isLoggedIn, 
     userData, 
@@ -151,7 +150,7 @@ const HeroSection = ({
                 sx={{
                     position: 'absolute',
                     bottom: 40,
-                    left: '50%',
+                    margin: "auto",
                     transform: 'translateX(-50%)',
                     color: 'primary.main',
                 }}

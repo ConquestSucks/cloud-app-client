@@ -6,7 +6,6 @@ export default function HomeLayout({
   children
 }: {
   children: React.ReactNode;
-  navbar: React.ReactNode;
 }) {
   const [queryClient] = React.useState(() => new QueryClient());
 
