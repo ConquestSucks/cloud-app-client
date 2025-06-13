@@ -6,8 +6,9 @@ class SignalRService {
 
     async getConnection(): Promise<HubConnection> {
         if (!this.connection) {
+            const hubUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5141') + '/hubs/currentFileProgress';
             this.connection = new HubConnectionBuilder()
-                .withUrl('http://localhost:5141/hubs/currentFileProgress')
+                .withUrl(hubUrl)
                 .withAutomaticReconnect()
                 .build();
 

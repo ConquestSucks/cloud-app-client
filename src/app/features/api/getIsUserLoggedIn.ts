@@ -1,10 +1,7 @@
-import axios from "axios";
+import axios from "@/app/shared/api/axios";
 
 export const getIsUserLoggedIn = async (): Promise<number> => {
-    const response = await axios.get('http://localhost:5141/api/v1/users/isUserLoggedIn', {
-        withCredentials: true
-    });
-
+    const response = await axios.get('/api/v1/users/isUserLoggedIn');
     return response.status;
 }
 

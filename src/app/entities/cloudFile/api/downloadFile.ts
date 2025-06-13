@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios from '@/app/shared/api/axios';
 import { getBlob } from '../lib/getBlob';
 
 export const downloadFile = async (key: string): Promise<number> => {
-    const response = await axios.get(`http://localhost:5141/api/v1/files/download/${key}`, {
+    const response = await axios.get(`/api/v1/files/download/${key}`, {
         responseType: "blob",
         withCredentials: true,
     });

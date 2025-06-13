@@ -1,11 +1,9 @@
-import axios from 'axios';
+import axios from '@/app/shared/api/axios';
 
 export const restoreFile = async (key: string): Promise<number> => {
 
-    const response = await axios.put(`http://localhost:5141/api/v1/files/restoreFile/`, {
+    const response = await axios.put(`/api/v1/files/restoreFile/`, {
         key
-    }, {
-        withCredentials: true
     });
 
     return response.status;
