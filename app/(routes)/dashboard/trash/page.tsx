@@ -1,5 +1,5 @@
 import DisplayFileList from '@/core/entities/cloudFile/ui/get-files/DisplayFileList'
-import PageTitle from '@/core/shared/ui/PageTitle'
+import PageTitle from '@/app/shared/ui/PageTitle'
 import React from 'react'
 
 const Trash = () => {

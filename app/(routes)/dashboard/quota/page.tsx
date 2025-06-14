@@ -1,7 +1,7 @@
 'use client'
 
-import DisplayStorageQuota from '@/core/features/storage-quota/ui/DisplayStorageQuota'
-import PageTitle from '@/core/shared/ui/PageTitle'
+import DisplayStorageQuota from '@/app/features/storage-quota/ui/DisplayStorageQuota'
+import PageTitle from '@/app/shared/ui/PageTitle'
 import React from 'react'
 
 const Quota = () => {
