@@ -1,6 +1,6 @@
 'use client';
-import DashboardNavbarComponent from "@/core/widgets/dashboard-navbar/ui/DashboardNavbarComponent";
-import DashboardSidebarComponent from "@/core/widgets/dashboard-sidebar/ui/Sidebar";
+import DashboardNavbarComponent from "@/app/widgets/dashboard-navbar/ui/DashboardNavbarComponent";
+import DashboardSidebarComponent from "@/app/widgets/dashboard-sidebar/ui/Sidebar";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 

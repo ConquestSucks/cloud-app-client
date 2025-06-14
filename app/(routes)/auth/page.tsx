@@ -1,7 +1,7 @@
 "use client";
-import { useGetIsUserLoggedIn } from "@/core/features/auth/hooks/useGetIsUserLoggedIn";
-import AuthForm from "@/core/features/auth/ui/authForm";
-import AuthPlateText from "@/core/features/auth/ui/authPlateText";
+import { useGetIsUserLoggedIn } from "@/app/features/auth/hooks/useGetIsUserLoggedIn";
+import AuthForm from "@/app/features/auth/ui/authForm";
+import AuthPlateText from "@/app/features/auth/ui/authPlateText";
 import { redirect } from "next/navigation";
 import React from "react";
 import { Box, Paper } from '@mui/material';

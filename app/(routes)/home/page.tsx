@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useGetIsUserLoggedIn } from "@/core/features/auth/hooks/useGetIsUserLoggedIn";
+import { useGetIsUserLoggedIn } from "@/app/features/auth/hooks/useGetIsUserLoggedIn";
 import { useQuery } from "@tanstack/react-query";
-import { getSelfUser, UserDto } from "@/core/features/storage-quota/api/getSelfUser";
+import { getSelfUser, UserDto } from "@/app/features/storage-quota/api/getSelfUser";
 import { useRouter } from "next/navigation";
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Button, Typography, Box, Container, IconButton, Paper, Card, CardContent } from '@mui/material';
@@ -12,8 +12,8 @@ import CloudDoneIcon from '@mui/icons-material/CloudDone';
 import DevicesIcon from '@mui/icons-material/Devices';
 import SpeedIcon from '@mui/icons-material/Speed';
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
-import UserDisplayComponent from '@/core/shared/ui/UserDisplayComponent';
-import { useUserAvatarLoader } from '@/core/shared/hooks/useUserAvatarLoader';
+import UserDisplayComponent from '@/app/shared/ui/UserDisplayComponent';
+import { useUserAvatarLoader } from '@/app/shared/hooks/useUserAvatarLoader';
 
 const HeroSection = ({ 
     isLoggedIn, 
