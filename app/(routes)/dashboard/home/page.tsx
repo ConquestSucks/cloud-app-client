@@ -1,7 +1,7 @@
 'use client'
 
-import FileUploadForm from "@/app/entities/cloudFile/ui/file-upload/FileUploadForm";
-import DisplayFileList from "@/app/entities/cloudFile/ui/get-files/DisplayFileList";
+import FileUploadForm from "@/core/entities/cloudFile/ui/file-upload/FileUploadForm";
+import DisplayFileList from "@/core/entities/cloudFile/ui/get-files/DisplayFileList";
 import PageTitle from "@/app/shared/ui/PageTitle";
 
 import React from "react";
