@@ -14,7 +14,7 @@ const DisplayFileList = ({ deleted = false }: { deleted?: boolean }) => {
     useLayoutEffect(() => {
         if (containerRef.current) {
             const containerHeight = containerRef.current.offsetHeight;
-            const ITEM_HEIGHT = 72; // Approximate height of one FileItem including margin
+            const ITEM_HEIGHT = 74; // Approximate height of one FileItem including margin
             const newSize = Math.max(1, Math.floor(containerHeight / ITEM_HEIGHT));
             setPageSize(newSize);
         }
