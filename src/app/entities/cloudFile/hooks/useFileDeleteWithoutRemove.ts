@@ -7,7 +7,7 @@ export const useFileDeleteWithoutRemove = () => {
     return useMutation<number, Error, string>({
         mutationFn: fileDeleteWithoutRemove,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["userFiles"] });
+            queryClient.invalidateQueries({ queryKey: ['files'] });
         }
     });
 }

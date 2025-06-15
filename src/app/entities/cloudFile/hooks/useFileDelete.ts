@@ -7,7 +7,7 @@ export const useFileDelete = () => {
     return useMutation<number, Error, string>({
         mutationFn: fileDelete,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["userFiles"] });
+            queryClient.invalidateQueries({ queryKey: ['files'] });
         }
     });
 }

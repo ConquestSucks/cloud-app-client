@@ -7,7 +7,7 @@ export const useRestoreFile = () => {
     return useMutation<number, Error, string>({
         mutationFn: restoreFile,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["userFiles"] });
+            queryClient.invalidateQueries({ queryKey: ['files'] });
         }
     });
 }
