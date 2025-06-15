@@ -1,8 +1,5 @@
 'use client'
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
-
-const queryClient = new QueryClient();
 
 export default function QuotaLayout({
     children,
@@ -10,10 +7,8 @@ export default function QuotaLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <QueryClientProvider client={queryClient}>
-            <div className="dashboard-page">
-                {children}
-            </div>
-        </QueryClientProvider>
+        <div className="dashboard-page">
+            {children}
+        </div>
     );
 } 
