@@ -29,12 +29,13 @@ export const AdvantagesSection = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
         <Box
             component="section"
             sx={{
-                py: { xs: 6, md: 8 },
+                height: '100vh',
                 bgcolor: 'grey.50',
-                minHeight: '100vh',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                alignItems: 'center',
+                p: { xs: 2, sm: 3 }
             }}
         >
             <Container maxWidth="lg">
@@ -44,9 +45,10 @@ export const AdvantagesSection = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                     sx={{
                         fontWeight: 'bold',
                         textAlign: 'center',
-                        mb: {xs: 6, md: 8},
+                        mb: { xs: 3, md: 5 },
                         color: 'text.primary',
-                        letterSpacing: '-0.5px'
+                        letterSpacing: '-0.5px',
+                        fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }
                     }}
                 >
                     Откройте мир возможностей с Cloud Storage
@@ -87,7 +89,7 @@ export const AdvantagesSection = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                         );
                     })}
                 </div>
-                <Box sx={{ textAlign: 'center', mt: {xs: 6, md: 8} }}>
+                <Box sx={{ textAlign: 'center', mt: { xs: 4, md: 6 } }}>
                     <Button
                         variant="contained"
                         color="primary"
