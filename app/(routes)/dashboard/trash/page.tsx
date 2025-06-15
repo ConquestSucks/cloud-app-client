@@ -4,9 +4,9 @@ import React from 'react'
 
 const Trash = () => {
     return (
-        <div className='dashboard-page'>
+        <div className='dashboard-page relative w-full h-full flex flex-col'>
             <PageTitle title="Корзина" />
-            <div className="flex-1 mt-8">
+            <div className="flex-grow mt-8">
                 <DisplayFileList deleted={true}/>
             </div>
         </div>
