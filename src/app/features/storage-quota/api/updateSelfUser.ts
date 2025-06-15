@@ -18,7 +18,8 @@ export const updateSelfUser = async (data: Partial<UserDto & { avatarFile?: File
             params: queryParams,
         });
     } else {
-        await axiosInstance.put('/api/v1/users/updateSelfUser', null, {
+        const emptyFormData = new FormData();
+        await axiosInstance.put('/api/v1/users/updateSelfUser', emptyFormData, {
             params: queryParams,
         });
     }
