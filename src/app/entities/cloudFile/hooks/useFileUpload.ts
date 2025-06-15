@@ -16,7 +16,7 @@ export const useFileUpload = () => {
             return fileUpload(file, { connectionId, onUploadProgress });
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["userFiles"] });
+            queryClient.invalidateQueries({ queryKey: ["files"] });
         }
     });
 };
