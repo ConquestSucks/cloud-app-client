@@ -2,23 +2,16 @@
 
 import React from 'react';
 import { useGetIsUserLoggedIn } from "@/app/features/auth/hooks/useGetIsUserLoggedIn";
-import { useQuery } from "@tanstack/react-query";
-import { getSelfUser, UserDto } from "@/app/features/storage-quota/api/getSelfUser";
 import { Box } from '@mui/material';
 import { HeroSection } from '@/app/widgets/hero-section/ui/HeroSection';
 import { AdvantagesSection } from '@/app/widgets/advantages-section/ui/AdvantagesSection';
 import { usePageScroll } from '@/app/features/home-page-scroll/hooks/usePageScroll';
+import { useGetSelfUser } from '@/app/features/storage-quota/hooks/useGetSelfUser';
 
 const HomePage = () => {
     const { data: isLoggedInStatus, isLoading: isAuthLoading } = useGetIsUserLoggedIn();
     const isAuthenticated = !isAuthLoading && isLoggedInStatus === 200;
-
-    const { data: userData, isLoading: isUserQueryLoading } = useQuery<UserDto>({
-        queryKey: ["selfUser"],
-        queryFn: getSelfUser,
-        enabled: isAuthenticated,
-        refetchOnWindowFocus: false,
-    });
+    const { data: userData, isLoading: isUserQueryLoading } = useGetSelfUser();
 
     const { 
         heroRef, 

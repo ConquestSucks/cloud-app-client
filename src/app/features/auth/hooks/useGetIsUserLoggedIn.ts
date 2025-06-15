@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { getIsUserLoggedIn } from "../../api/getIsUserLoggedIn"
+import { getIsUserLoggedIn } from "../api/getIsUserLoggedIn"
 import { AxiosError } from "axios";
 
 export const useGetIsUserLoggedIn = () => {

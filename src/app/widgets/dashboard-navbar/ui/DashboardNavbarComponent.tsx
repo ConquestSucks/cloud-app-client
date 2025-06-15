@@ -5,77 +5,38 @@ import SearchBar from "./SearchBar";
 import { AppBar, Toolbar, Box, useTheme, useMediaQuery } from "@mui/material";
 import NavbarLogo from "@/app/shared/ui/NavbarLogo";
 import { useGetIsUserLoggedIn } from "@/app/features/auth/hooks/useGetIsUserLoggedIn";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getSelfUser, UserDto } from "@/app/features/storage-quota/api/getSelfUser";
+import { UserDto } from "@/app/features/storage-quota/api/getSelfUser";
 import ProfileModal from './ProfileModal';
 import UserDisplayComponent from '@/app/shared/ui/UserDisplayComponent';
 import { useUserAvatarLoader } from '@/app/shared/hooks/useUserAvatarLoader';
 import { useRouter } from 'next/navigation';
-
-const updateProfileApiCall = async (data: Partial<UserDto & { avatarFile?: File }>): Promise<void> => {
-    const displayNameToUpdate = data.displayName;
-    const avatarFileToUpdate = data.avatarFile;
-
-    if (!displayNameToUpdate) {
-        const errorMsg = "Critical: displayNameToUpdate is undefined in updateProfileApiCall. displayName is required for profile update.";
-        throw new Error(errorMsg);
-    }
-
-    const queryParams = { displayName: displayNameToUpdate };
-
-    try {
-        const axiosInstance = (await import("@/app/shared/api/axios")).default;
-
-        if (avatarFileToUpdate) {
-            const formData = new FormData();
-            formData.append('avatar', avatarFileToUpdate);
-            
-            await axiosInstance.put('/api/v1/users/updateSelfUser', formData, {
-                params: queryParams,
-            });
-        } else {
-            await axiosInstance.put('/api/v1/users/updateSelfUser', undefined, {
-                params: queryParams,
-            });
-        }
-    } catch (error) {
-        throw error; 
-    }
-};
+import { useGetSelfUser } from '@/app/features/storage-quota/hooks/useGetSelfUser';
+import { useUpdateSelfUser } from "@/app/features/storage-quota/hooks/useUpdateSelfUser";
 
 const DashboardNavbarComponent = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const queryClient = useQueryClient();
     const router = useRouter();
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-    const { data: isLoggedInStatus, isLoading: isAuthLoading } = useGetIsUserLoggedIn();
-    const isAuthenticated = !isAuthLoading && isLoggedInStatus === 200;
-
-    const { data: userData, isLoading: isUserQueryLoading } = useQuery<UserDto>({
-        queryKey: ["selfUser"],
-        queryFn: getSelfUser,
-        enabled: isAuthenticated,
-        refetchOnWindowFocus: false, 
-    });
-
-    const { avatarBlobUrl, isAvatarLoading: isAvatarLoadingGlobal } = useUserAvatarLoader(userData);
+    const { isLoading: isAuthLoading } = useGetIsUserLoggedIn();
+    const { data: userData, isLoading: isUserQueryLoading } = useGetSelfUser();
+    const { avatarBlobUrl, isAvatarLoading } = useUserAvatarLoader(userData);
+    const { mutateAsync: updateProfile, isPending: isUpdatingProfile } = useUpdateSelfUser();
 
     const handleOpenProfileModal = () => setIsProfileModalOpen(true);
     const handleCloseProfileModal = () => setIsProfileModalOpen(false);
 
     const handleSaveProfile = async (updatedData: Partial<UserDto & { avatarFile?: File }>) => {
         try {
-            await updateProfileApiCall(updatedData);
+            await updateProfile(updatedData);
             handleCloseProfileModal();
-            await queryClient.invalidateQueries({ queryKey: ["selfUser"] });
         } catch (error) {
-            throw error;
+            console.error("Failed to save profile from UI", error);
         }
     };
     
-    const combinedIsUserLoading = isAuthLoading || (isAuthenticated && isUserQueryLoading);
+    const combinedIsUserLoading = isAuthLoading || isUserQueryLoading;
 
     return (
         <>
@@ -106,7 +67,7 @@ const DashboardNavbarComponent = () => {
                             userData={userData}
                             avatarBlobUrl={avatarBlobUrl}
                             isUserLoading={combinedIsUserLoading}
-                            isAvatarLoading={isAvatarLoadingGlobal}
+                            isAvatarLoading={isAvatarLoading}
                             onClick={handleOpenProfileModal}
                             variant="navbar"
                             isMobile={isMobile}
@@ -126,7 +87,7 @@ const DashboardNavbarComponent = () => {
                     userData={userData} 
                     onSave={handleSaveProfile} 
                     currentAvatarBlobUrl={avatarBlobUrl}
-                    isCurrentAvatarLoading={isAvatarLoadingGlobal} 
+                    isCurrentAvatarLoading={isAvatarLoading || isUpdatingProfile} 
                 />
             )}
         </>
