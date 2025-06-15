@@ -22,7 +22,7 @@ const DisplayStorageQuota = () => {
 
     if (isUserLoading || isQuotaLoading) {
         return (
-            <div className="max-w-5xl mx-auto">
+            <div>
                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-8 text-white mb-6 animate-pulse">
                     <div className="h-32"></div>
                 </div>
@@ -47,7 +47,7 @@ const DisplayStorageQuota = () => {
     const usedPercentage = (userData.diskSpaceOccupied / userData.diskSpace) * 100;
 
     return (
-        <div className="max-w-5xl mx-auto">
+        <div>
             <StorageOverview
                 totalSpace={userData.diskSpace}
                 usedSpace={userData.diskSpaceOccupied}
