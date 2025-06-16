@@ -6,12 +6,12 @@ import React from 'react'
 
 const Quota = () => {
     return (
-        <>
+        <div className="dashboard-page">
             <PageTitle title="Хранилище" />
             <div className="mt-8">
                 <DisplayStorageQuota />
             </div>
-        </>
+        </div>
     )
 }
 

@@ -2,21 +2,27 @@
 import DashboardNavbarComponent from "@/app/widgets/dashboard-navbar/ui/DashboardNavbarComponent";
 import DashboardSidebarComponent from "@/app/widgets/dashboard-sidebar/ui/Sidebar";
 import React from "react";
+import { useGetSelfUser } from "@/app/features/storage-quota/hooks/useGetSelfUser";
+import UserContext from "@/app/contexts/UserContext";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { data: userData, isLoading: isUserLoading } = useGetSelfUser();
+
   return (
-    <div className="flex flex-col min-h-screen bg-[#f5f5f5]">
-      <DashboardNavbarComponent/>
-      <div className="flex gap-2 flex-1 p-4">
-        <DashboardSidebarComponent />
-        <div className="flex-1">
-          {children}
+    <UserContext.Provider value={{ userData, isUserLoading }}>
+      <div className="flex flex-col min-h-screen bg-[#f5f5f5]">
+        <DashboardNavbarComponent/>
+        <div className="flex gap-2 flex-1 p-4">
+          <DashboardSidebarComponent />
+          <div className="flex-1">
+            {children}
+          </div>
         </div>
       </div>
-    </div>
+    </UserContext.Provider>
   );
 }

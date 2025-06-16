@@ -10,8 +10,8 @@ import ProfileModal from './ProfileModal';
 import UserDisplayComponent from '@/app/shared/ui/UserDisplayComponent';
 import { useUserAvatarLoader } from '@/app/shared/hooks/useUserAvatarLoader';
 import { useRouter } from 'next/navigation';
-import { useGetSelfUser } from '@/app/features/storage-quota/hooks/useGetSelfUser';
 import { useUpdateSelfUser } from "@/app/features/storage-quota/hooks/useUpdateSelfUser";
+import { useUser } from "@/app/contexts/UserContext";
 
 const DashboardNavbarComponent = () => {
     const theme = useTheme();
@@ -20,7 +20,7 @@ const DashboardNavbarComponent = () => {
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
     const { isLoading: isAuthLoading } = useGetIsUserLoggedIn();
-    const { data: userData, isLoading: isUserQueryLoading } = useGetSelfUser();
+    const { userData, isUserLoading: isUserQueryLoading } = useUser();
     const { avatarBlobUrl, isAvatarLoading } = useUserAvatarLoader(userData);
     const { mutateAsync: updateProfile, isPending: isUpdatingProfile } = useUpdateSelfUser();
 

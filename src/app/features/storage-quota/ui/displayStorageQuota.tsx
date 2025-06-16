@@ -1,26 +1,18 @@
 'use client'
 
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getSelfUser } from '../api/getSelfUser';
-import { getUserQuota } from '../api/getUserQuota';
 import { StorageOverview } from './StorageOverview';
 import { StorageTypesList } from './StorageTypesList';
 import { StorageWarning } from './StorageWarning';
 import { STORAGE_TYPES } from '../config/storageConfig';
+import { useGetUserQuota } from '../hooks/useGetUserQuota';
+import { useUser } from '@/app/contexts/UserContext';
 
 const DisplayStorageQuota = () => {
-    const { data: userData, isLoading: isUserLoading } = useQuery({
-        queryKey: ['selfUser'],
-        queryFn: getSelfUser
-    });
+    const { userData, isUserLoading: isUserDataLoading } = useUser();
+    const { data: quotaData, isLoading: isQuotaDataLoading } = useGetUserQuota();
 
-    const { data: quotaData, isLoading: isQuotaLoading } = useQuery({
-        queryKey: ['userQuota'],
-        queryFn: getUserQuota
-    });
-
-    if (isUserLoading || isQuotaLoading) {
+    if (isUserDataLoading || isQuotaDataLoading) {
         return (
             <div>
                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-8 text-white mb-6 animate-pulse">
